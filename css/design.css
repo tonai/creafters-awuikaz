@@ -1,0 +1,466 @@
+/*
+ * global definition
+ */
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+a {
+    text-decoration: none;
+    color : #d2691e; /*#8b4513;*/
+}
+
+a:hover {
+    color : #8b4513; /*#be7846;*/
+}
+
+a img {
+    border : none;
+}
+
+ul {
+    list-style-type: none;
+}
+
+table {
+    width: 100%;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+th {
+    border: 1px solid black;
+    background-color : #c3bf9d;
+}
+
+td {
+    border: 1px solid black;
+}
+
+label {
+    display: block;
+    width: 48%;
+    float: left;
+}
+
+input {
+    width: 100px;
+}
+
+table tr td input, table tr td textarea {
+    width: 80%;
+}
+
+table tr td select {
+    width: auto;
+}
+
+/*
+ * class definition
+ */
+
+/* global classes */
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.clear {
+    clear: both;
+}
+
+.center {
+    text-align: center;
+}
+
+
+.quote {
+    background-color: #e5dfbf;
+    border: 1px solid black;
+    width: 80%;
+    margin: auto;
+}
+
+    .quote_auteur {
+        width: 100%;
+        border-bottom: 1px solid black;
+        background-color : #c3bf9d;
+        padding-left: 20px;
+    }
+
+    .quote_message {
+        width: 100%;
+        padding: 5px;
+    }
+
+.categorie {
+    background-color : #c3bf9d;
+}
+
+.valeur_texte {
+    color: #807b59;
+}
+
+.petit {
+    font-size: 75%;
+}
+
+.w100 {
+    width: 100%;
+}
+
+.w50 {
+    width: 50%;
+}
+
+.w20 {
+    width: 20%;
+}
+
+.paragraphe {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* accueil classes */
+.titre {
+    width: 59%;
+	padding: 5px;
+}
+
+    .titre div {
+        margin-top: 5px;
+		margin-left: 50px;
+    }
+
+.nombresujets {
+    width: 8%;
+    text-align: center;
+}
+
+.nombremessages {
+    width: 8%;
+    text-align: center;
+}
+
+.derniermessage {
+    width: 20%;
+    text-align: center;
+}
+
+
+/* forum classes */
+.forum {
+    width: 44%;
+	padding: 5px;
+}
+
+    .forum div {
+        margin-top: 5px;
+		margin-left: 50px;
+    }
+
+.auteur {
+    width: 20%;
+    text-align: center;
+}
+
+.nombrereponses {
+    width: 8%;
+    text-align: center;
+}
+
+.nombrevues {
+    width: 8%;
+    text-align: center;
+}
+
+
+/* topic classes */
+.vt_auteur
+{
+    width: 20%;
+    background-color : #c3bf9d;
+    padding: 5px;
+    vertical-Align: top;
+    text-align: center;
+}
+
+.vt_mess
+{
+    width: 80%;
+    padding: 5px;
+}
+
+    .vt_mess input {
+        width: auto;
+    }
+
+    .vt_mess table, .vt_mess tr{
+        border: none;
+    }
+
+    .vt_mess td {
+        border: none;
+        padding-bottom: 5px;
+    }
+
+    .vt_mess .pourcentage_sondage {
+        width: 50%;
+    }
+
+        .vt_mess .pourcentage_sondage div {
+            height: 10px;
+            background-color: #c3bf9d;
+        }
+
+/* mp classes */
+.mp_sujet {
+    width: 60%;
+}
+
+.mp_expediteur {
+    width: 10%;
+    text-align: center;
+}
+
+.mp_time {
+    width: 20%;
+    text-align: center;
+}
+
+.mp_action {
+    width: 10%;
+    text-align: center;
+}
+
+/*
+ * particular definition
+ */
+
+body {
+    font-family: "verdana", "times new roman", times, serif;
+    font-size: 90%;
+    background-color: #dfdab3;
+    min-width: 1000px;
+    width: 95%;
+    margin: auto;
+}
+
+#page {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#banniere {
+    width: 786px;
+    height: 154px;
+    background-position:  center;
+    margin-bottom: 10px;
+    background-image:url(../images/banner.jpg);
+}
+
+#connexion {
+    width: 210px;
+    float: right;
+}
+
+    #connexion fieldset {
+        padding: 0px 0px 10px 5px;
+        color: #807b59;
+    }
+
+    #connexion legend {
+        margin-bottom: 10px;
+        color: #807b59;
+    }
+
+    #connexion p {
+        color: black;
+    }
+
+    #connexion ul {
+        margin-bottom: 10px;
+    }
+
+        #connexion ul li {
+            margin-bottom: 10px;
+        }
+
+    #connexion label {
+        display: block;
+        width: 90px;
+        float: left;
+    }
+
+        #connexion .memory label {
+            width: 176px;
+        }
+
+        #connexion .memory input {
+            width: auto;
+        }
+
+    #connexion .center {
+        margin-top: 10px;
+    }
+
+#navigation {
+    height: 20px;
+    background-color: #c3bf9d;
+    margin-bottom: 20px;
+    padding: 2px 10px 2px 10px;
+}
+
+#index {
+    float: right;
+}
+
+    #index a {
+        display: block;
+        height: 18px;
+        width: 15px;
+        background-color: #d2691e;
+        color: #8b4513;
+        text-align: center;
+        float: left;
+        border: 1px solid black;
+        margin-left: 2px;
+    }
+
+    #index a:hover {
+        background-color: #8b4513;
+        color: #d2691e;
+    }
+
+    #index div {
+        height: 18px;
+        width: 15px;
+        background-color: #8b4513;
+        color: #d2691e;
+        text-align: center;
+        float: left;
+        border: 1px solid black;
+        margin-left: 2px;
+    }
+
+#corps {
+    border: 1px solid black;
+    width: 100%;
+    margin-top: 10px;
+    background-color: #f1efd4; /* #faebd7 */
+    clear: both;
+}
+
+#corps_forum {
+    clear: both;
+    padding: 5px;
+}
+
+#text_editor {
+    width: 50%;
+    margin: auto;
+    margin-top: 20px;
+}
+
+    #text_editor #sondage_options {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    #text_editor #bb_options div ul {
+        margin: 0px;
+        padding: 0px;
+        list-style-type: none;
+        clear: both;
+        margin-left: 10px;
+    }
+
+        #text_editor #bb_options div ul li {
+            float: left;
+        }
+
+    #text_editor #message_area textarea {
+        width: 100%;
+        height: 100px;
+    }
+
+    #text_editor .options_modo ul {
+        margin: 0px;
+        padding: 0px;
+        list-style-type: none;
+    }
+
+        #text_editor .options_modo ul li {
+            float: left;
+        }
+
+#profil {
+    width: 75%;
+    margin: auto;
+}
+
+    #profil textarea {
+        width: 50%;
+        height: 50px;
+    }
+
+#footer {
+    background-color: #c3bf9d;
+    padding-left: 10px;
+    margin-top: 20px;
+}
+
+    #footer table {
+        width: 50%;
+        float: right;
+        font-size: 75%;
+        border: none;
+        border-collapse: separate;
+        border-spacing: 5px;
+    }
+
+        #footer table td {
+            width: 40%;
+            border: none;
+        }
+		
+			#footer table td div {
+	            margin-top: 5px;
+	            margin-left: 50px;
+	        }
+
+
+#administration table {
+    text-align: center;
+}
+
+    #administration #edit_categorie input {
+        width: 50%;
+    }
+
+/* liste de couleurs utilisables
+ * antiquewhite : #faebd7
+ * bisque : #ffe4c4
+ * darkkhaki : #bdb76b
+ * burlywod : #deb887
+ * darkgoldenrod : #b8860b
+ * goldenrod : #daa520
+ * lemonchiffon : #fffacd
+ * mocassin : #ffe4b5
+ * najajowhite : #ffdead
+ * palegoldenrod : #eee8aa
+ * olive : #808000
+ * olivedrab : #6b8e23
+ * peachpuff : #ffdab9
+ * peru : #cd853f
+ * rosybrown : #bc8f8f
+ * saddlebrown : #8b4513
+ * tan : #d2b48c
+ * wheat : #f5deb3
+ */

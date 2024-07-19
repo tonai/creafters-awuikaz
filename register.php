@@ -5,8 +5,8 @@ if (!$_SESSION['connected'])
     {
         $query = 'SELECT *
                     FROM config';
-        $result = mysql_query($query) or die(mysql_error());
-        while ($data = mysql_fetch_assoc($result))
+        $result = mysqli_query($mysqli, $query) or die(mysqli_error());
+        while ($data = mysqli_fetch_assoc($result))
         {
             if ($data['config_nom'] == 'avatar_maxsize')
                 $avatar_maxsize = $data['config_valeur'];
@@ -42,14 +42,14 @@ if (!$_SESSION['connected'])
         //On récupère les variables
         $i = 0;
         $temps = time();
-        $signature = mysql_real_escape_string($_POST['signature']);
-        $pseudo = mysql_real_escape_string($_POST['pseudo']);
-        $email = mysql_real_escape_string($_POST['email']);
-        $msn = mysql_real_escape_string($_POST['msn']);
-        $website = mysql_real_escape_string($_POST['website']);
-        $occupation = mysql_real_escape_string($_POST['occupation']);
-        $localisation = mysql_real_escape_string($_POST['localisation']);
-        $pass = mysql_real_escape_string($_POST['password']);
+        $signature = mysqli_real_escape_string($_POST['signature']);
+        $pseudo = mysqli_real_escape_string($_POST['pseudo']);
+        $email = mysqli_real_escape_string($_POST['email']);
+        $msn = mysqli_real_escape_string($_POST['msn']);
+        $website = mysqli_real_escape_string($_POST['website']);
+        $occupation = mysqli_real_escape_string($_POST['occupation']);
+        $localisation = mysqli_real_escape_string($_POST['localisation']);
+        $pass = mysqli_real_escape_string($_POST['password']);
 
         if (strlen($pass) >= $pass_minsize && strlen($pass) < 100)
         {
@@ -78,8 +78,8 @@ if (!$_SESSION['connected'])
         $query = 'SELECT COUNT(*)
                     FROM membres
                     WHERE membre_pseudo = "'.$pseudo.'"';
-        $result = mysql_query($query) or die (mysql_error());
-        $pseudoExiste = mysql_result($result, 0);
+        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
+        $pseudoExiste = mysqli_data_seek($result, 0);
         if($pseudoExiste != 0)
         {
             $pseudo_erreur1 = "Votre pseudo est déjà utilisé par un membre";
@@ -98,8 +98,8 @@ if (!$_SESSION['connected'])
             $query = 'SELECT COUNT(*)
                         FROM membres
                         WHERE membre_email = "'.$email.'"';
-            $result = mysql_query($query) or die (mysql_error());
-            $mailExiste = mysql_result($result, 0);
+            $result = mysqli_query($mysqli, $query) or die (mysqli_error());
+            $mailExiste = mysqli_data_seek($result, 0);
 
             if ($mailExiste != 0)
             {
@@ -207,8 +207,8 @@ if (!$_SESSION['connected'])
                 $query = 'SELECT count(membre_id)
                             FROM membres
                             WHERE membre_code = "'.$code.'"';
-                $res = mysql_query($query) or die (mysql_error());
-                $row = mysql_fetch_array($res);
+                $res = mysqli_query($mysqli, $query) or die (mysqli_error());
+                $row = mysqli_fetch_array($res);
             }
 			
             //On balance le tout dans notre table
@@ -238,7 +238,7 @@ if (!$_SESSION['connected'])
                                             "'.$temps.'",
                                             "'.$email_visible.'",
 											"'.$code.'")';
-            $result = mysql_query($query) or die(mysql_error());
+            $result = mysqli_query($mysqli, $query) or die(mysqli_error());
 			
             //Message
             $message = "Voici le lien permettant de valider votre inscription :";

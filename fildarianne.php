@@ -68,8 +68,8 @@ switch ($page)
                             forum_topic
                         FROM forum
                         WHERE forum_id = "'.intval($_GET['f']).'"';
-            $result = mysql_query($query) or die (mysql_error());
-            if ($data = mysql_fetch_assoc($result))
+            $result = mysqli_query($mysqli, $query) or die (mysqli_error());
+            if ($data = mysqli_fetch_assoc($result))
             {
                 if (isset($_GET['action']))
                 {
@@ -92,8 +92,8 @@ switch ($page)
 
                     $query = 'SELECT *
                                 FROM config';
-                    $config = mysql_query($query) or die(mysql_error());
-                    while ($dataConfig = mysql_fetch_assoc($config))
+                    $config = mysqli_query($mysqli, $query) or die(mysqli_error());
+                    while ($dataConfig = mysqli_fetch_assoc($config))
                     {
                         if ($dataConfig['config_nom'] == 'topic_par_page')
                             $messageParPage = $dataConfig['config_valeur'];
@@ -171,8 +171,8 @@ switch ($page)
                                 FROM forum
                                 LEFT JOIN topic ON forum.forum_id = topic.forum_id
                                 WHERE topic_id = "'.intval($_GET['t']).'"';
-            $result = mysql_query($query) or die (mysql_error());
-            if ($data = mysql_fetch_assoc($result))
+            $result = mysqli_query($mysqli, $query) or die (mysqli_error());
+            if ($data = mysqli_fetch_assoc($result))
             {
                 if (isset($_GET['action']))
                 {
@@ -237,8 +237,8 @@ switch ($page)
 
                     $query = 'SELECT *
                                 FROM config';
-                    $config = mysql_query($query) or die(mysql_error());
-                    while ($dataConfig = mysql_fetch_assoc($config))
+                    $config = mysqli_query($mysqli, $query) or die(mysqli_error());
+                    while ($dataConfig = mysqli_fetch_assoc($config))
                     {
                         if ($dataConfig['config_nom'] == 'post_par_page')
                             $messageParPage = $dataConfig['config_valeur'];

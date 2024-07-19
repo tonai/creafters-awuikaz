@@ -3,25 +3,25 @@ if (isset($_GET['code'])) {
     $query = 'SELECT count(membre_id)
                 FROM membres
                 WHERE membre_code = "'.intval($_GET['code']).'"';
-	$result = mysql_query($query) or dir (mysql_error());
-    $codeExiste = mysql_result($result, 0);
+	$result = mysqli_query($mysqli, $query) or dir (mysqli_error());
+    $codeExiste = mysqli_data_seek($result, 0);
 
     if ($codeExiste != 0)
     {
         $query = 'UPDATE membres
                     SET membre_verif = 1
                     WHERE membre_code = "'.intval($_GET['code']).'"';
-        $result = mysql_query($query) or dir (mysql_error());
+        $result = mysqli_query($mysqli, $query) or dir (mysqli_error());
 
         $query = 'SELECT membre_email
                     FROM membres
                     WHERE membre_rang = "'.LEVEL_ADMIN.'"';
-        $result = mysql_query($query) or dir (mysql_error());
+        $result = mysqli_query($mysqli, $query) or dir (mysqli_error());
 
         $to = '';
-        for ($i=0; $i<mysql_num_rows($result); $i++)
+        for ($i=0; $i<mysqli_num_rows($result); $i++)
         {
-            $data = mysql_fetch_assoc($result);
+            $data = mysqli_fetch_assoc($result);
             if ($i != 0)
                 $to .= ', ';
             $to .= $data['membre_email'];
@@ -30,8 +30,8 @@ if (isset($_GET['code'])) {
         $query = 'SELECT membre_pseudo
                     FROM membres
                     WHERE membre_code = "'.intval($_GET['code']).'"';
-        $result = mysql_query($query) or dir (mysql_error());
-        $data = mysql_fetch_assoc($result);
+        $result = mysqli_query($mysqli, $query) or dir (mysqli_error());
+        $data = mysqli_fetch_assoc($result);
 
         $message = $data['membre_pseudo'].' vient de s\'inscrire sur le forum';
         $titre = 'nouvel inscrit sur le forum "Creafters Awuikaz"';

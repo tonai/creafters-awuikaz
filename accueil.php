@@ -10,16 +10,16 @@ if ($action == 'marquer')
                         forum_id,
                         topic_last_post
                             FROM topic';
-        $result = mysql_query($query) or die (mysql_error());
-        while ($data = mysql_fetch_array($result))
+        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
+        while ($data = mysqli_fetch_array($result))
         {
             //Topic déjà consulté ?
             $query = 'SELECT COUNT(*)
                         FROM topic_view
                         WHERE tv_topic_id = "'.$data['topic_id'].'"
                         AND tv_id = "'.intval($_SESSION['id']).'"';
-            $result2 = mysql_query($query) or die (mysql_error());
-            $nbr_vu = mysql_result($result2, 0);
+            $result2 = mysqli_query($mysqli, $query) or die (mysqli_error());
+            $nbr_vu = mysqli_data_seek($result2, 0);
 
             if ($nbr_vu == 0) //Si c'est la première fois on insère une ligne entière
             {
@@ -31,7 +31,7 @@ if ($action == 'marquer')
                                                 "'.$data['topic_id'].'",
                                                 "'.$data['forum_id'].'",
                                                 "'.$data['topic_last_post'].'")';
-                $result2 = mysql_query($query) or die (mysql_error());
+                $result2 = mysqli_query($mysqli, $query) or die (mysqli_error());
             }
             else //Sinon, on met simplement à jour
             {
@@ -39,7 +39,7 @@ if ($action == 'marquer')
                             SET tv_post_id = "'.$data['topic_last_post'].'"
                             WHERE tv_topic_id = "'.$data['topic_id'].'"
                             AND tv_id = "'.intval($_SESSION['id']).'"';
-                $result2 = mysql_query($query) or die (mysql_error());
+                $result2 = mysqli_query($mysqli, $query) or die (mysqli_error());
             }
         }
     }
@@ -69,8 +69,8 @@ $query = 'SELECT cat_id,
                     LEFT JOIN membres ON membre_id = post_createur
                     WHERE auth_view <= '.$level.'
                     ORDER BY cat_ordre, forum_ordre';
-$result = mysql_query($query) or die (mysql_error());
-if (mysql_num_rows($result) < 1)
+$result = mysqli_query($mysqli, $query) or die (mysqli_error());
+if (mysqli_num_rows($result) < 1)
 {
     echo'Il n y a pas de forum. Allez en ajouter avec le panneau d administration !';
 }
@@ -78,7 +78,7 @@ else
 {
     $categorie = NULL;
     $table = false;
-    while($data = mysql_fetch_assoc($result))
+    while($data = mysqli_fetch_assoc($result))
     {
         //Gestion de l'image à afficher
         $ico_mess = 'message.png';
@@ -89,9 +89,9 @@ else
                         LEFT JOIN forum ON forum.forum_id = topic.forum_id
                         LEFT OUTER JOIN topic_view ON forum.forum_id = tv_forum_id AND topic.topic_id = tv_topic_id AND tv_id = "'.intval($_SESSION['id']).'"
                         WHERE topic.forum_id = "'.$data['forum_id'].'"';
-            $result2 = mysql_query($query) or die (mysql_error());
+            $result2 = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-            while($data2 = mysql_fetch_assoc($result2))
+            while($data2 = mysqli_fetch_assoc($result2))
             {
                 if (!empty($data2['tv_id']) && $ico_mess != 'message_non_lu.png')
                 {
@@ -167,8 +167,8 @@ else
                 //Selection dernier message
                 $query = 'SELECT *
                             FROM config';
-                $config = mysql_query($query) or die(mysql_error());
-                while ($dataConfig = mysql_fetch_assoc($config))
+                $config = mysqli_query($mysqli, $query) or die(mysqli_error());
+                while ($dataConfig = mysqli_fetch_assoc($config))
                 {
                     if ($dataConfig['config_nom'] == 'post_par_page')
                         $messageParPage = $dataConfig['config_valeur'];

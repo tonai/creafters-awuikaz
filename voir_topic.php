@@ -14,11 +14,11 @@ switch($action)
                                 FROM topic
                                 LEFT JOIN forum ON forum.forum_id = topic.forum_id
                                 WHERE topic_id = "'.$topic.'"';
-            $result = mysql_query($query)or die(mysql_error());
-            if (mysql_num_rows($result) != 0)
+            $result = mysqli_query($mysqli, $query)or die(mysqli_error());
+            if (mysqli_num_rows($result) != 0)
             {
-                $data = mysql_fetch_assoc($result);
-                $message = mysql_real_escape_string($_POST['message']);
+                $data = mysqli_fetch_assoc($result);
+                $message = mysqli_real_escape_string($_POST['message']);
                 $temps = time();
                 if ((verif_auth($data['auth_post']) && $data['topic_genre'] != 'Annonce' && $data['topic_locked'] == 0) || (verif_auth($data['auth_annonce']) && $data['topic_genre']=='PostIt'))
                 {
@@ -29,8 +29,8 @@ switch($action)
                                         topic_post
                                             FROM topic
                                             WHERE topic_id = "'.$topic.'"';
-                        $result = mysql_query($query);
-                        $data = mysql_fetch_assoc($result) or die ("Une erreur semble être survenue lors de l'envoi du message");
+                        $result = mysqli_query($mysqli, $query);
+                        $data = mysqli_fetch_assoc($result) or die ("Une erreur semble être survenue lors de l'envoi du message");
                         $forum = $data['forum_id'];
 
                         //Puis on entre le message
@@ -46,33 +46,33 @@ switch($action)
                                                     "'.$temps.'",
                                                     "'.$topic.'",
                                                     "'.$forum.'")';
-                        $result = mysql_query($query) or die ("Une erreur semble avoir survenu lors de l'envoi du message");
+                        $result = mysqli_query($mysqli, $query) or die ("Une erreur semble avoir survenu lors de l'envoi du message");
 
-                        $nouveaupost = mysql_insert_id();
+                        $nouveaupost = mysqli_insert_id();
                         //On change un peu la table topic
                         $query = 'UPDATE topic
                                     SET topic_post = topic_post + 1,
                                         topic_last_post = "'.$nouveaupost.'"
                                     WHERE topic_id ="'.$topic.'"';
-                        $result = mysql_query($query) or die ("Une erreur semble avoir survenu lors de l'envoi du message");
+                        $result = mysqli_query($mysqli, $query) or die ("Une erreur semble avoir survenu lors de l'envoi du message");
 
                         //Puis même combat sur les 2 autres tables
                         $query = 'UPDATE forum
                                     SET forum_post = forum_post + 1 ,
                                         forum_last_post_id = "'.$nouveaupost.'"
                                     WHERE forum_id = "'.$forum.'"';
-                        $result = mysql_query($query) or die ("Une erreur semble avoir survenu lors de l'envoi du message");
+                        $result = mysqli_query($mysqli, $query) or die ("Une erreur semble avoir survenu lors de l'envoi du message");
 
                         $query = 'UPDATE membres
                                     SET membre_post = membre_post + 1
                                     WHERE membre_id = "'.intval($_SESSION['id']).'"';
-                        $result = mysql_query($query) or die ("Une erreur semble avoir survenu lors de l'envoi du message");
+                        $result = mysqli_query($mysqli, $query) or die ("Une erreur semble avoir survenu lors de l'envoi du message");
 
                         //Et un petit message
                         $query = 'SELECT *
                                     FROM config';
-                        $config = mysql_query($query) or die(mysql_error());
-                        while ($dataConfig = mysql_fetch_assoc($config))
+                        $config = mysqli_query($mysqli, $query) or die(mysqli_error());
+                        while ($dataConfig = mysqli_fetch_assoc($config))
                         {
                             if ($dataConfig['config_nom'] == 'post_par_page')
                                 $messageParPage = $dataConfig['config_valeur'];
@@ -86,7 +86,7 @@ switch($action)
                                     tv_poste = "1"
                                     WHERE tv_id = "'.intval($_SESSION['id']).'"
                                     AND tv_topic_id = "'.$topic.'"';
-                        $result = mysql_query($query);
+                        $result = mysqli_query($mysqli, $query);
 
                         echo'<p>Votre message a bien été ajouté!<br/><br/>';
                         echo 'Cliquez <a href="index.php">ici</a> pour revenir à l index du forum<br/>';
@@ -134,12 +134,12 @@ switch($action)
                                 LEFT JOIN forum ON post.post_forum_id = forum.forum_id
                                 LEFT JOIN topic ON topic.topic_id = post.topic_id
                                 WHERE post_id="'.$post.'"';
-            $result = mysql_query($query) or die (mysql_error());
+            $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-            if (mysql_num_rows($result) != 0)
+            if (mysqli_num_rows($result) != 0)
             {
-                $data = mysql_fetch_assoc($result);
-                $message = mysql_real_escape_string($_POST['message']);
+                $data = mysqli_fetch_assoc($result);
+                $message = mysqli_real_escape_string($_POST['message']);
 
                 if (verif_auth($data['auth_modo']) || $data['post_createur'] == $_SESSION['id'])
                 {
@@ -150,8 +150,8 @@ switch($action)
                         // si le titre est modifié
                         if (isset($_POST['titre']))
                         {
-                            $titre = mysql_real_escape_string($_POST['titre']);
-                            $description = mysql_real_escape_string($_POST['description']);
+                            $titre = mysqli_real_escape_string($_POST['titre']);
+                            $description = mysqli_real_escape_string($_POST['description']);
                             
                             if (!empty($titre))
                             {
@@ -161,7 +161,7 @@ switch($action)
                                                 SET topic_titre = "'.$titre.'",
                                                     topic_desc = "'.$description.'"
                                                 WHERE topic_id = "'.$topic.'"';
-                                    $result = mysql_query($query) or die (mysql_error());
+                                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
                                 }
                             }
                             else
@@ -186,29 +186,29 @@ switch($action)
                                                 option_texte
                                                     FROM sondage_option
                                                     WHERE option_post_id = "'.$post.'"';
-                                $result = mysql_query($query) or die (mysql_error());
+                                $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                                 for ($i=0; $i<NB_OPTIONS_SONDAGE; $i++)
                                 {
-                                    $data2 = mysql_fetch_array($result);
-                                    if (!empty($data2) && $i <= mysql_num_rows($result))
+                                    $data2 = mysqli_fetch_array($result);
+                                    if (!empty($data2) && $i <= mysqli_num_rows($result))
                                     {
                                         if ($_POST['option'][$i] != '') // UPDATE
                                         {
                                             $query = 'UPDATE sondage_option
-                                                        SET option_texte = "'.mysql_real_escape_string($_POST['option'][$i]).'"
+                                                        SET option_texte = "'.mysqli_real_escape_string($_POST['option'][$i]).'"
                                                         WHERE option_id = "'.$data2['option_id'].'"';
-                                            mysql_query($query) or die (mysql_error());
+                                            mysqli_query($mysqli, $query) or die (mysqli_error());
                                         }
                                         else // DELETE
                                         {
                                             $query = 'DELETE FROM sondage_option
                                                         WHERE option_id = "'.$data2['option_id'].'"';
-                                            mysql_query($query) or die (mysql_error());
+                                            mysqli_query($mysqli, $query) or die (mysqli_error());
 
                                             $query = 'DELETE FROM reponse_sondage
                                                         WHERE sondage_option_id = "'.$data2['option_id'].'"';
-                                            mysql_query($query) or die (mysql_error());
+                                            mysqli_query($mysqli, $query) or die (mysqli_error());
                                         }
                                     }
                                     else // INSERT
@@ -218,8 +218,8 @@ switch($action)
                                                                             option_texte)
                                                                         VALUES("",
                                                                             "'.$post.'",
-                                                                            "'.mysql_real_escape_string($_POST['option'][$i]).'")';
-                                        mysql_query($query) or die (mysql_error());
+                                                                            "'.mysqli_real_escape_string($_POST['option'][$i]).'")';
+                                        mysqli_query($mysqli, $query) or die (mysqli_error());
                                     }
                                 }
                             }
@@ -232,12 +232,12 @@ switch($action)
                         $query = 'UPDATE post
                                     SET post_texte = "'.$message.'"
                                     WHERE post_id = "'.$post.'"';
-                        $result = mysql_query($query) or die (mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                         $query = 'SELECT *
                                 FROM config';
-                        $config = mysql_query($query) or die(mysql_error());
-                        while ($dataConfig = mysql_fetch_assoc($config))
+                        $config = mysqli_query($mysqli, $query) or die(mysqli_error());
+                        while ($dataConfig = mysqli_fetch_assoc($config))
                         {
                             if ($dataConfig['config_nom'] == 'post_par_page')
                                 $messageParPage = $dataConfig['config_valeur'];
@@ -284,11 +284,11 @@ switch($action)
                                 LEFT JOIN topic ON topic.topic_id = post.topic_id
                                 LEFT JOIN forum ON forum.forum_id = topic.forum_id
                                 WHERE post.post_id ="'.$post.'"';
-            $result = mysql_query($query) or die(mysql_error());
+            $result = mysqli_query($mysqli, $query) or die(mysqli_error());
 
-            if (mysql_num_rows($result) != 0)
+            if (mysqli_num_rows($result) != 0)
             {
-                $data = mysql_fetch_array($result);
+                $data = mysqli_fetch_array($result);
                 if (verif_auth($data['auth_modo']) || $data['post_createur'] == $_SESSION['id'])
                 {
                     ?>
@@ -308,11 +308,11 @@ switch($action)
                                             option_texte
                                                 FROM sondage_option
                                                 WHERE option_post_id = "'.$post.'"';
-                            $result2 = mysql_query($query)or die(mysql_error());
+                            $result2 = mysqli_query($mysqli, $query)or die(mysqli_error());
 
                             for ($i=0; $i<NB_OPTIONS_SONDAGE; $i++) {
-                                $data2 = mysql_fetch_array($result2);
-                                $value = ((!empty($data2) && $i <= mysql_num_rows($result2))? $data2['option_texte']: '');
+                                $data2 = mysqli_fetch_array($result2);
+                                $value = ((!empty($data2) && $i <= mysqli_num_rows($result2))? $data2['option_texte']: '');
                                 echo '<p><label>option '.($i+1).' : </label><input type="text" name="option['.$i.']" class="w50" value="'.$value.'" /></p>';
                             }
 
@@ -429,11 +429,11 @@ switch($action)
                             FROM post
                             LEFT JOIN forum ON post.post_forum_id = forum.forum_id
                             WHERE post_id='.$post.'';
-        $result = mysql_query($query) or die(mysql_error());
+        $result = mysqli_query($mysqli, $query) or die(mysqli_error());
 
-        if (mysql_num_rows($result) != 0)
+        if (mysqli_num_rows($result) != 0)
         {
-            $data = mysql_fetch_assoc($result);
+            $data = mysqli_fetch_assoc($result);
             if (verif_auth($data['auth_modo']) || $data['post_createur'] == $_SESSION['id'])
             {
                 echo'<p>Êtes vous certains de vouloir supprimer ce post ?</p>';
@@ -461,11 +461,11 @@ switch($action)
                             FROM post
                             LEFT JOIN forum ON post.post_forum_id = forum.forum_id
                             WHERE post_id="'.$post.'"';
-        $result = mysql_query($query) or die (mysql_error());
+        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-        if (mysql_num_rows($result) != 0)
+        if (mysqli_num_rows($result) != 0)
         {
-            $data = mysql_fetch_assoc($result);
+            $data = mysqli_fetch_assoc($result);
             $topic = $data['topic_id'];
             $forum = $data['forum_id'];
 
@@ -478,15 +478,15 @@ switch($action)
                 $query = 'SELECT COUNT(*) AS first_post
                             FROM topic
                             WHERE topic_first_post = "'.$post.'"';
-                $requete_first_post = mysql_query($query) or die (mysql_error());
+                $requete_first_post = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                 $query = 'SELECT COUNT(*) AS last_post
                             FROM topic
                             WHERE topic_last_post = "'.$post.'"';
-                $requete_last_post = mysql_query($query) or die (mysql_error());
+                $requete_last_post = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-                $first_post = mysql_fetch_assoc($requete_first_post);
-                $last_post = mysql_fetch_assoc($requete_last_post);
+                $first_post = mysqli_fetch_assoc($requete_first_post);
+                $last_post = mysqli_fetch_assoc($requete_last_post);
 
 
                 //On distingue maintenant les cas
@@ -509,7 +509,7 @@ switch($action)
                     //On supprime le post
                     $query = 'DELETE FROM post
                                 WHERE post_id = "'.$post.'"';
-                    $result = mysql_query($query) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                     //On modifie la valeur de topic_last_post pour cela on
                     //récupère l'id du plus récent  message de ce topic
@@ -518,8 +518,8 @@ switch($action)
                                 WHERE topic_id = "'.$topic.'"
                                 ORDER BY post_id DESC
                                 LIMIT 0,1';
-                    $result = mysql_query($query);
-                    $data2 = mysql_fetch_assoc($result) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query);
+                    $data2 = mysqli_fetch_assoc($result) or die (mysqli_error());
 
                     //On fait de même pour forum_last_post_id
                     $query = 'SELECT post_id
@@ -527,14 +527,14 @@ switch($action)
                                 WHERE post_forum_id = "'.$forum.'"
                                 ORDER BY post_id DESC
                                 LIMIT 0,1';
-                    $result = mysql_query($query);
-                    $data3 = mysql_fetch_assoc($result) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query);
+                    $data3 = mysqli_fetch_assoc($result) or die (mysqli_error());
 
                     //On met à jour la valeur de topic_last_post
                     $query = 'UPDATE topic
                                 SET topic_last_post = "'.$data2['post_id'].'"
                                 WHERE topic_last_post = "'.$post.'"';
-                    $result = mysql_query($query) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                     //On enlève 1 au nombre de messages du forum et on met à
                     //jour forum_last_post
@@ -542,19 +542,19 @@ switch($action)
                                 SET forum_post = forum_post - 1,
                                     forum_last_post_id = "'.$data3['post_id'].'"
                                 WHERE forum_id = "'.$forum.'"';
-                    $result = mysql_query($query) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                     //On enlève 1 au nombre de messages du topic
                     $query = 'UPDATE topic
                                 SET  topic_post = topic_post - 1
                                 WHERE topic_id = "'.$topic.'"';
-                    $result = mysql_query($query) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                     //On enlève 1 au nombre de messages du membre
                     $query = 'UPDATE membres
                                 SET  membre_post = membre_post - 1
                                 WHERE membre_id = "'.$data['post_createur'].'"';
-                    $result = mysql_query($query) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                     //Enfin le message
                     echo'<p>Le message a bien été supprimé !<br/>';
@@ -566,25 +566,25 @@ switch($action)
                     //On supprime le post
                     $query = 'DELETE FROM post
                                 WHERE post_id = "'.$post.'"';
-                    $result = mysql_query($query) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                     //On enlève 1 au nombre de messages du forum
                     $query = 'UPDATE forum
                                 SET  forum_post = forum_post - 1
                                 WHERE forum_id ="'.$forum.'"';
-                    $result = mysql_query($query) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                     //On enlève 1 au nombre de messages du topic
                     $query = 'UPDATE topic
                                 SET  topic_post = topic_post - 1
                                 WHERE topic_id = "'.$topic.'"';
-                    $result = mysql_query($query) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                     //On enlève 1 au nombre de messages du membre
                     $query = 'UPDATE membres
                                 SET  membre_post = membre_post - 1
                                 WHERE membre_id = "'.$data['post_createur'].'"';
-                    $result = mysql_query($query) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                     //Enfin le message
                     echo'<p>Le message a bien été supprimé !<br/>';
@@ -610,11 +610,11 @@ switch($action)
                             FROM topic
                             LEFT JOIN forum ON topic.forum_id = forum.forum_id
                             WHERE topic_id="'.$topic.'"';
-        $result = mysql_query($query) or die (mysql_error());
+        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-        if (mysql_num_rows($result) != 0)
+        if (mysqli_num_rows($result) != 0)
         {
-            $data = mysql_fetch_assoc($result);
+            $data = mysqli_fetch_assoc($result);
             $forum = $data['forum_id'];
 
             //Ensuite on vérifie que le membre a le droit d'être ici
@@ -625,14 +625,14 @@ switch($action)
                 $query = 'SELECT COUNT(*) AS nombre_post
                             FROM post
                             WHERE topic_id = "'.$topic.'"';
-                $requete_count_post = mysql_query($query) or die (mysql_error());
-                $data_nombrepost = mysql_fetch_assoc($requete_count_post);
+                $requete_count_post = mysqli_query($mysqli, $query) or die (mysqli_error());
+                $data_nombrepost = mysqli_fetch_assoc($requete_count_post);
                 $nombrepost = $data_nombrepost['nombre_post'];
 
                 //On supprime le topic
                 $query = 'DELETE FROM topic
                             WHERE topic_id = "'.$topic.'"';
-                mysql_query($query);
+                mysqli_query($mysqli, $query);
 
                 //On enlève le nombre de post posté par chaque membre dans le topic
                 $query = 'SELECT post_createur,
@@ -640,20 +640,20 @@ switch($action)
                                     FROM post
                                     WHERE topic_id = "'.$topic.'"
                                     GROUP BY post_createur';
-                $requete_postparmembre = mysql_query($query) or die (mysql_error());
+                $requete_postparmembre = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-                while($data_postparmembre = mysql_fetch_assoc($requete_postparmembre))
+                while($data_postparmembre = mysqli_fetch_assoc($requete_postparmembre))
                 {
                     $query = 'UPDATE membres
                                 SET membre_post = membre_post - '.$data_postparmembre['nombre_mess'].'
                                 WHERE membre_id = "'.$data_postparmembre['post_createur'].'"';
-                    $result = mysql_query($query) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
                 }
 
                 //Et on supprime les posts !
                 $query = 'DELETE FROM post
                             WHERE topic_id = "'.$topic.'"';
-                $result = mysql_query($query) or die (mysql_error());
+                $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                 //Dernière chose, on récupère le dernier post du forum
                 $query = 'SELECT post_id
@@ -661,8 +661,8 @@ switch($action)
                             WHERE post_forum_id = '.$forum.'
                             ORDER BY post_id DESC
                             LIMIT 0,1';
-                $requete_forum = mysql_query($query) or die (mysql_error());
-                $data_forum = mysql_fetch_assoc($requete_forum);
+                $requete_forum = mysqli_query($mysqli, $query) or die (mysqli_error());
+                $data_forum = mysqli_fetch_assoc($requete_forum);
 
                 //Ensuite on modifie certaines valeurs :
                 $query = 'UPDATE forum
@@ -670,7 +670,7 @@ switch($action)
                                 forum_post = forum_post - '.$nombrepost.',
                                 forum_last_post_id = "'.$data_forum['post_id'].'"
                             WHERE forum_id = "'.$forum.'"';
-                $result = mysql_query($query) or die (mysql_error());
+                $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
 
                 //Enfin le message
@@ -695,11 +695,11 @@ switch($action)
                     FROM topic
                     LEFT JOIN forum ON forum.forum_id = topic.forum_id
                     WHERE topic_id = "'.$topic.'"';
-        $result = mysql_query($query) or die (mysql_error());
+        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-        if (mysql_num_rows($result) != 0)
+        if (mysqli_num_rows($result) != 0)
         {
-            $data = mysql_fetch_assoc($result);
+            $data = mysqli_fetch_assoc($result);
 
             //Ensuite on vérifie que le membre a le droit d'être ici
             if (verif_auth($data['auth_modo']))
@@ -708,7 +708,7 @@ switch($action)
                 $query = 'UPDATE topic
                             SET topic_locked = "1"
                             WHERE topic_id = "'.$topic.'"';
-                $result = mysql_query($query) or die (mysql_error());
+                $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                 echo'<p>Le topic a bien été verrouillé ! <br/>';
                 echo 'Cliquez <a href="?page=vt&t='.$topic.'">ici</a> pour retourner au topic<br/>';
@@ -733,11 +733,11 @@ switch($action)
                             FROM topic
                             LEFT JOIN forum ON forum.forum_id = topic.forum_id
                             WHERE topic_id = '.$topic.'';
-        $result = mysql_query($query) or die (mysql_error());
+        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-        if (mysql_num_rows($result) != 0)
+        if (mysqli_num_rows($result) != 0)
         {
-            $data = mysql_fetch_assoc($result);
+            $data = mysqli_fetch_assoc($result);
 
             //Ensuite on vérifie que le membre a le droit d'être ici
             if (verif_auth($data['auth_modo']))
@@ -746,7 +746,7 @@ switch($action)
                 $query = 'UPDATE topic
                             SET topic_locked = "0"
                             WHERE topic_id = "'.$topic.'"';
-                $result = mysql_query($query) or die (mysql_error());
+                $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                 echo'<p>Le topic a bien été déverrouillé !<br/>';
                 echo 'Cliquez <a href="?page=vt&t='.$topic.'">ici</a> pour retourner au topic<br/>';
@@ -771,10 +771,10 @@ switch($action)
                         FROM topic
                         LEFT JOIN forum ON forum.forum_id = topic.forum_id
                         WHERE topic_id = "'.$topic.'"';
-            $result = mysql_query($query) or die (mysql_error());
-            if (mysql_num_rows($result) != 0)
+            $result = mysqli_query($mysqli, $query) or die (mysqli_error());
+            if (mysqli_num_rows($result) != 0)
             {
-                $data = mysql_fetch_assoc($result);
+                $data = mysqli_fetch_assoc($result);
 
                 if (verif_auth($data['auth_modo']))
                 {
@@ -785,13 +785,13 @@ switch($action)
                     $query = 'UPDATE topic
                                 SET forum_id = "'.$destination.'"
                                 WHERE topic_id = "'.$topic.'"';
-                    $result = mysql_query($query) or die ("Un problème est survenu lors du déplacement");
+                    $result = mysqli_query($mysqli, $query) or die ("Un problème est survenu lors du déplacement");
 
                     //On déplace les posts
                     $query = 'UPDATE post
                                 SET post_forum_id = "'.$destination.'"
                                 WHERE topic_id = "'.$topic.'"';
-                    $result = mysql_query($query) or die ("Un problème est survenu lors du déplacement");
+                    $result = mysqli_query($mysqli, $query) or die ("Un problème est survenu lors du déplacement");
 
                     //On s'occupe d'ajouter / enlever les nombres de post / topic aux
                     //forum d'origine et de destination
@@ -799,8 +799,8 @@ switch($action)
                     $query = 'SELECT COUNT(*) AS nombre_post
                                 FROM post
                                 WHERE topic_id = "'.$topic.'"';
-                    $post_number_requete = mysql_query($query) or die ("Un problème est survenu lors du déplacement");
-                    $data_post_number = mysql_fetch_assoc($post_number_requete);
+                    $post_number_requete = mysqli_query($mysqli, $query) or die ("Un problème est survenu lors du déplacement");
+                    $data_post_number = mysqli_fetch_assoc($post_number_requete);
                     $nombrepost = $data_post_number['nombre_post'];
 
                     //Il faut également vérifier qu'on a pas déplacé un post qui été
@@ -810,8 +810,8 @@ switch($action)
                                 WHERE post_forum_id = "'.$origine.'"
                                 ORDER BY post_id DESC
                                 LIMIT 0,1';
-                    $result = mysql_query($query) or die ("Un problème est survenu lors du déplacement");
-                    $data = mysql_fetch_assoc($result);
+                    $result = mysqli_query($mysqli, $query) or die ("Un problème est survenu lors du déplacement");
+                    $data = mysqli_fetch_assoc($result);
 
                     //Puis on met à jour le forum d'origine
                     $query = 'UPDATE forum
@@ -819,7 +819,7 @@ switch($action)
                                     forum_topic = forum_topic - 1,
                                     forum_last_post_id = "'.$data['post_id'].'"
                                 WHERE forum_id = "'.$origine.'"';
-                    $result = mysql_query($query) or dir (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or dir (mysqli_error());
 
                     //Avant de mettre à jour le forum de destination il faut
                     //vérifier la valeur de forum_last_post_id
@@ -827,8 +827,8 @@ switch($action)
                                 FROM post WHERE post_forum_id = "'.$destination.'"
                                 ORDER BY post_id DESC
                                 LIMIT 0,1';
-                    $result = mysql_query($query) or die ("Un problème est survenu lors du déplacement");
-                    $data = mysql_fetch_assoc($result);
+                    $result = mysqli_query($mysqli, $query) or die ("Un problème est survenu lors du déplacement");
+                    $data = mysqli_fetch_assoc($result);
 
                     //Et on met à jour enfin !
                     $query = 'UPDATE forum
@@ -836,7 +836,7 @@ switch($action)
                                     forum_topic = forum_topic + 1,
                                     forum_last_post_id = "'.$data['post_id'].'"
                                 WHERE forum_id = "'.$destination.'"';
-                    $result = mysql_query($query) or die ("Un problème est survenu lors du déplacement");
+                    $result = mysqli_query($mysqli, $query) or die ("Un problème est survenu lors du déplacement");
 
                     //C'est gagné ! On affiche le message
                     echo '<p>Le topic a bien été déplacé <br/>';
@@ -866,11 +866,11 @@ switch($action)
                                 FROM topic
                                 LEFT JOIN forum ON forum.forum_id = topic.forum_id
                                 WHERE topic_id = "'.$topic.'"';
-            $result = mysql_query($query) or die (mysql_error());
+            $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-            if (mysql_num_rows($result) != 0)
+            if (mysqli_num_rows($result) != 0)
             {
-                $data = mysql_fetch_assoc($result);
+                $data = mysqli_fetch_assoc($result);
                 if (verif_auth($data['auth_view']))
                 {
                     if (isset($_POST['sondage']))
@@ -883,7 +883,7 @@ switch($action)
                                                         "'.$data['topic_first_post'].'",
                                                         "'.$_POST['sondage'].'",
                                                         "'.$_SESSION['id'].'")';
-                        $result = mysql_query($query) or die (mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
                     }
                     else
                     {
@@ -913,11 +913,11 @@ switch($action)
                             LEFT JOIN forum ON post_forum_id = forum_id
                             LEFT JOIN topic ON topic.topic_id = post.topic_id
                             WHERE topic.topic_id = "'.$topic.'"';
-        $result = mysql_query($query) or die (mysql_error());
+        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-        if (mysql_num_rows($result) != 0)
+        if (mysqli_num_rows($result) != 0)
         {
-            $data = mysql_fetch_assoc($result);
+            $data = mysqli_fetch_assoc($result);
             if ((intval($_SESSION['id']) == $data['post_createur'] && $i != 0) || verif_auth($data['auth_modo']))
             {
                 if ($data['topic_genre'] == 'Sondage' && $data['topic_cloture'] == 0)
@@ -948,11 +948,11 @@ switch($action)
                             LEFT JOIN forum ON post_forum_id = forum_id
                             LEFT JOIN topic ON topic.topic_id = post.topic_id
                             WHERE topic.topic_id = "'.$topic.'"';
-        $result = mysql_query($query) or die (mysql_error());
+        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-        if (mysql_num_rows($result) != 0)
+        if (mysqli_num_rows($result) != 0)
         {
-            $data = mysql_fetch_assoc($result);
+            $data = mysqli_fetch_assoc($result);
             if ((intval($_SESSION['id']) == $data['post_createur'] && $i != 0) || verif_auth($data['auth_modo']))
             {
                 if ($data['topic_genre'] == 'Sondage' && $data['topic_cloture'] == 0)
@@ -960,7 +960,7 @@ switch($action)
                     $query = 'UPDATE topic
                                 SET topic_cloture = "1"
                                 WHERE topic_id = "'.$topic.'"';
-                    $result = mysql_query($query) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                     echo '<p>Le topic a bien était clôturé.<br/>';
                     echo 'Cliquez <a href="?page=vt&t='.$topic.'">ici</a> pour revenir au topic<br/>';
@@ -999,11 +999,11 @@ switch($action)
                             FROM topic
                             LEFT JOIN forum ON topic.forum_id = forum.forum_id
                             WHERE topic_id = "'.$topic.'"';
-        $result = mysql_query($query) or die (mysql_error());
+        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-        if (mysql_num_rows($result) != 0)
+        if (mysqli_num_rows($result) != 0)
         {
-            $data = mysql_fetch_assoc($result);
+            $data = mysqli_fetch_assoc($result);
 
             if ($_SESSION['connected'])
             {
@@ -1012,8 +1012,8 @@ switch($action)
                             FROM topic_view
                             WHERE tv_topic_id = "'.$topic.'"
                             AND tv_id = "'.intval($_SESSION['id']).'"';
-                $result = mysql_query($query) or die (mysql_error());
-                $nbr_vu = mysql_result($result, 0);
+                $result = mysqli_query($mysqli, $query) or die (mysqli_error());
+                $nbr_vu = mysqli_data_seek($result, 0);
 
                 if ($nbr_vu == 0) //Si c'est la première fois on insère une ligne entière
                 {
@@ -1025,7 +1025,7 @@ switch($action)
                                                     "'.$topic.'",
                                                     "'.$data['forum_id'].'",
                                                     "'.$data['topic_last_post'].'")';
-                    $result = mysql_query($query);
+                    $result = mysqli_query($mysqli, $query);
                 }
                 else //Sinon, on met simplement à jour
                 {
@@ -1033,7 +1033,7 @@ switch($action)
                                 SET tv_post_id = "'.$data['topic_last_post'].'"
                                 WHERE tv_topic_id = "'.$topic.'"
                                 AND tv_id = "'.intval($_SESSION['id']).'"';
-                    $result = mysql_query($query) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
                 }
             }
 
@@ -1041,8 +1041,8 @@ switch($action)
             {
                 $query = 'SELECT *
                             FROM config';
-                $config = mysql_query($query) or die(mysql_error());
-                while ($dataConfig = mysql_fetch_assoc($config))
+                $config = mysqli_query($mysqli, $query) or die(mysqli_error());
+                while ($dataConfig = mysqli_fetch_assoc($config))
                 {
                     if ($dataConfig['config_nom'] == 'post_par_page')
                         $messageParPage = $dataConfig['config_valeur'];
@@ -1074,10 +1074,10 @@ switch($action)
                                     WHERE topic_id ="'.$topic.'"
                                     ORDER BY post_id
                                     LIMIT '.$message.', '.$messageParPage.'';
-                $result2 = mysql_query($query)or die(mysql_error());
+                $result2 = mysqli_query($mysqli, $query)or die(mysqli_error());
 
                 //On vérifie que la requête a bien retourné des messages
-                if (mysql_num_rows($result2) < 1)
+                if (mysqli_num_rows($result2) < 1)
                 {
                    echo '<p>Il n y a aucun post sur ce topic, vérifiez l\'url et reessayez</p>';
                 }
@@ -1096,7 +1096,7 @@ switch($action)
                                         forum_name
                                             FROM forum
                                             WHERE forum_id <> "'.$data['forum_id'].'"';
-                        $result3 = mysql_query($query) or die (mysql_error());
+                        $result3 = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                         echo '<form method="post" action="?page=vt&action=deplacer&t='.$topic.'" class="right" >';
                         if ($data['topic_locked'] == 1) // Topic verrouillé !
@@ -1104,7 +1104,7 @@ switch($action)
                         else //Sinon le topic est déverrouillé !
                             echo '<a href="?page=vt&action=lock&t='.$topic.'"><img src="./images/lock.png" alt="verrouiller" title="Verrouiller ce sujet" /></a>';
                         echo '<select name="dest">';
-                        while($data3 = mysql_fetch_assoc($result3))
+                        while($data3 = mysqli_fetch_assoc($result3))
                         {
                             echo'<option value='.$data3['forum_id'].' id='.$data3['forum_id'].'>'.stripslashes(htmlspecialchars($data3['forum_name'])).'</option>';
                         }
@@ -1121,7 +1121,7 @@ switch($action)
 
                     <?php
                     $i = 0;
-                    while ($data2 = mysql_fetch_assoc($result2))
+                    while ($data2 = mysqli_fetch_assoc($result2))
                     {
                         echo '<tr>';
 						
@@ -1177,8 +1177,8 @@ switch($action)
                                             FROM reponse_sondage
                                             WHERE sondage_post_id = "'.$data2['post_id'].'"
                                             AND sondage_membre_id = "'.$_SESSION['id'].'"';
-                                $result3 = mysql_query($query)or die(mysql_error());
-                                $reponseExiste = mysql_result($result3, 0);
+                                $result3 = mysqli_query($mysqli, $query)or die(mysqli_error());
+                                $reponseExiste = mysqli_data_seek($result3, 0);
                             }
 
 
@@ -1189,18 +1189,18 @@ switch($action)
                                                     LEFT JOIN reponse_sondage ON sondage_post_id = option_post_id AND sondage_option_id = option_id
                                                     WHERE option_post_id = "'.$data2['post_id'].'"
                                                     GROUP BY option_id';
-                                $result3 = mysql_query($query)or die(mysql_error());
+                                $result3 = mysqli_query($mysqli, $query)or die(mysqli_error());
 
                                 $totalReponse = 0;
-                                while ($data3 = mysql_fetch_assoc($result3))
+                                while ($data3 = mysqli_fetch_assoc($result3))
                                 {
                                     $totalReponse += $data3['nb_reponse'];
                                 }
 
                                 echo '<table>';
 
-                                mysql_data_seek($result3, 0);
-                                while ($data3 = mysql_fetch_assoc($result3))
+                                mysqli_data_seek($result3, 0);
+                                while ($data3 = mysqli_fetch_assoc($result3))
                                 {
                                     echo '<tr>';
                                     echo '<td class="option_sondage" >'.$data3['option_texte'].'</td>';
@@ -1222,10 +1222,10 @@ switch($action)
                                                 option_texte
                                                     FROM sondage_option
                                                     WHERE option_post_id = "'.$data2['post_id'].'"';
-                                $result3 = mysql_query($query)or die(mysql_error());
+                                $result3 = mysqli_query($mysqli, $query)or die(mysqli_error());
 
                                 echo '<form action="?page=vt&t='.$topic.'&action=sondage" method="post" >';
-                                while ($data3 = mysql_fetch_assoc($result3))
+                                while ($data3 = mysqli_fetch_assoc($result3))
                                 {
                                     echo '<p><input type="radio" name="sondage" value="'.$data3['option_id'].'" > '.$data3['option_texte'].'</p>';
                                 }
@@ -1344,7 +1344,7 @@ switch($action)
                     $query = 'UPDATE topic
                                 SET topic_vu = topic_vu + 1
                                 WHERE topic_id = "'.$topic.'"';
-                    $result = mysql_query($query) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
                 }
             }
             else

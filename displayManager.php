@@ -122,14 +122,14 @@ echo '</div>';
 
 $query = 'SELECT count(post_id) AS nbMessages
             FROM post';
-$result = mysql_query($query) or die (mysql_error());
-$data = mysql_fetch_assoc($result);
+$result = mysqli_query($mysqli, $query) or die (mysqli_error());
+$data = mysqli_fetch_assoc($result);
 $nbMessage = $data['nbMessages'];
 
 $query = 'SELECT count(membre_id) AS nbMembres
                     FROM membres';
-$result = mysql_query($query) or die (mysql_error());
-$data = mysql_fetch_assoc($result);
+$result = mysqli_query($mysqli, $query) or die (mysqli_error());
+$data = mysqli_fetch_assoc($result);
 $nbMembres = $data['nbMembres'];
 
 $query = "SELECT membre_pseudo,
@@ -137,24 +137,24 @@ $query = "SELECT membre_pseudo,
                     FROM membres
                     ORDER BY membre_id DESC
                     LIMIT 0, 1";
-$result = mysql_query($query) or die (mysql_error());
-$data = mysql_fetch_assoc($result);
+$result = mysqli_query($mysqli, $query) or die (mysqli_error());
+$data = mysqli_fetch_assoc($result);
 $derniermembre = stripslashes(htmlspecialchars($data['membre_pseudo']));
 
 $count_online = 0;
 $query = 'SELECT COUNT(*) AS nbr_visiteurs
             FROM whosonline
             WHERE online_id = 0';
-$result = mysql_query($query) or die (mysql_error());
-$count_visiteurs = mysql_result($result,0);
+$result = mysqli_query($mysqli, $query) or die (mysqli_error());
+$count_visiteurs = mysqli_data_seek($result,0);
 
 $query = 'SELECT membre_id,
                 membre_pseudo
                     FROM whosonline
                     LEFT JOIN membres ON membre_id = online_id
                     WHERE online_time > '.TIME_MAX;
-$result = mysql_query($query) or die (mysql_error());
-$count_membres = mysql_num_rows($result);
+$result = mysqli_query($mysqli, $query) or die (mysqli_error());
+$count_membres = mysqli_num_rows($result);
 
 $count_online = $count_visiteurs + $count_membres;
 
@@ -195,7 +195,7 @@ $count_online = $count_visiteurs + $count_membres;
 <?php
 echo '<p>Il y a '.$count_online.' connectés ('.$count_membres.' membres et '.$count_visiteurs.' invités)<br/>';
 echo 'Liste des personnes en ligne : ';
-while ($data = mysql_fetch_assoc($result))
+while ($data = mysqli_fetch_assoc($result))
 {
     echo '<a href="?page=vp&m='.$data['membre_id'].'&action=consulter">'.stripslashes(htmlspecialchars($data['membre_pseudo'])).'</a> ';
 }

@@ -16,18 +16,18 @@ if ($_SESSION['connected'])
                         $query = 'SELECT config_nom,
                                         config_valeur
                                             FROM config';
-                        $resultat= mysql_query($query);
+                        $resultat= mysqli_query($mysqli, $query);
                         //Avec cette boucle, on va pouvoir contrôler le résultat pour voir s'il a changé
-                        while($data = mysql_fetch_assoc($resultat))
+                        while($data = mysqli_fetch_assoc($resultat))
                         {
                             if ($data['config_valeur'] != $_POST[$data['config_nom']])
                             {
                                 //On met ensuite à jour
-                                $valeur = mysql_real_escape_string($_POST[$data['config_nom']]);
+                                $valeur = mysqli_real_escape_string($_POST[$data['config_nom']]);
                                 $query = 'UPDATE config
                                             SET config_valeur = "'.$valeur.'"
                                             WHERE config_nom = "'.$data['config_nom'].'"';
-                                $result = mysql_query($query) or die(mysql_error());
+                                $result = mysqli_query($mysqli, $query) or die(mysqli_error());
                             }
                         }
                         echo'<p>Les nouvelles configurations ont été mises à jour !</p>';
@@ -51,8 +51,8 @@ if ($_SESSION['connected'])
                         $query = 'SELECT config_nom,
                                         config_valeur
                                             FROM config';
-                        $result = mysql_query($query) or die (mysql_error());
-                        while($data = mysql_fetch_assoc($result))
+                        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
+                        while($data = mysqli_fetch_assoc($result))
                         {
                             echo '<p><label for='.stripslashes(htmlspecialchars($data['config_nom'])).'>'.stripslashes(htmlspecialchars($config_name[$data['config_nom']])).' : </label>';
                             echo '<input type="text" id="'.stripslashes(htmlspecialchars($data['config_nom'])).'" value="'.stripslashes(htmlspecialchars($data['config_valeur'])).'" name="'.stripslashes(htmlspecialchars($data['config_nom'])).'"></p>';
@@ -71,8 +71,8 @@ if ($_SESSION['connected'])
                     echo '<h1>Créer un forum</h1>';
                     if (isset($_POST['submit']))
                     {
-                        $titre = mysql_real_escape_string($_POST['nom']);
-                        $desc = mysql_real_escape_string($_POST['desc']);
+                        $titre = mysqli_real_escape_string($_POST['nom']);
+                        $desc = mysqli_real_escape_string($_POST['desc']);
                         $cat = intval($_POST['cat']);
                         $query = 'INSERT INTO forum (forum_cat_id,
                                                     forum_name,
@@ -80,7 +80,7 @@ if ($_SESSION['connected'])
                                             VALUES ("'.$cat.'",
                                                     "'.$titre.'",
                                                     "'.$desc.'")';
-                        $result = mysql_query($query) or die(mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die(mysqli_error());
                         echo'<p>Le forum '.$titre.' a été créé !</p>';
                     }
                     else
@@ -89,9 +89,9 @@ if ($_SESSION['connected'])
                                         cat_nom
                                             FROM categorie
                                             ORDER BY cat_ordre DESC';
-                        $result = mysql_query($query) or die (mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-                        if (mysql_num_rows($result) != 0) // Existe-t-il qu moins une catégorie?
+                        if (mysqli_num_rows($result) != 0) // Existe-t-il qu moins une catégorie?
                         {
                             ?>
 
@@ -109,7 +109,7 @@ if ($_SESSION['connected'])
                         <select name="cat">
 
                             <?php
-                            while($data = mysql_fetch_assoc($result))
+                            while($data = mysqli_fetch_assoc($result))
                             {
                                 echo'<option value="'.$data['cat_id'].'">'.$data['cat_nom'].'</option>';
                             }
@@ -139,10 +139,10 @@ if ($_SESSION['connected'])
                     echo '<h1>Créer une catégorie</h1>';
                     if (isset($_POST['submit']))
                     {
-                        $titre = mysql_real_escape_string($_POST['nom']);
+                        $titre = mysqli_real_escape_string($_POST['nom']);
                         $query = 'INSERT INTO categorie (cat_nom)
                                                 VALUES ("'.$titre.'")';
-                        $result = mysql_query($query) or die(mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die(mysqli_error());
                         echo'<p>La catégorie '.$titre.' a été créée !<br/>';
                     }
                     else
@@ -175,7 +175,7 @@ if ($_SESSION['connected'])
                     {
                         $query = 'SELECT *
                                     FROM forum';
-                        $result = mysql_query($query) or die(mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die(mysqli_error());
 
                         foreach ($_POST['nom'] as $forumId => $nom)
                         {
@@ -186,8 +186,8 @@ if ($_SESSION['connected'])
                             $auth_annonce = intval($_POST['auth_annonce'][$forumId]);
                             $auth_modo = intval($_POST['auth_modo'][$forumId]);
 
-                            mysql_data_seek($result, 0);
-                            while ($data = mysql_fetch_assoc($result))
+                            mysqli_data_seek($result, 0);
+                            while ($data = mysqli_fetch_assoc($result))
                             {
                                 if ($forumId == $data['forum_id'])
                                 {
@@ -207,7 +207,7 @@ if ($_SESSION['connected'])
                                                         auth_annonce = "'.$auth_annonce.'",
                                                         auth_modo = "'.$auth_modo.'"
                                                     WHERE forum_id = "'.intval($forumId).'"';
-                                        mysql_query($query) or die(mysql_error());
+                                        mysqli_query($mysqli, $query) or die(mysqli_error());
                                         echo'<p>Le forum "'.$data['forum_name'].'" a été modifié !</p>';
                                     }
                                 }
@@ -229,9 +229,9 @@ if ($_SESSION['connected'])
                                             FROM forum
                                             LEFT JOIN categorie ON forum_cat_id = cat_id
                                             ORDER BY cat_ordre, forum_ordre';
-                        $result = mysql_query($query) or die (mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-                        if (mysql_num_rows($result) != 0) // Existe-t-il qu moins un forum?
+                        if (mysqli_num_rows($result) != 0) // Existe-t-il qu moins un forum?
                         {
                             echo '<form method="post" action="?page=admin&cat=droits_forum">';
                             ?>
@@ -248,7 +248,7 @@ if ($_SESSION['connected'])
                         </tr>
 
                             <?php
-                            while ($data = mysql_fetch_assoc($result))
+                            while ($data = mysqli_fetch_assoc($result))
                             {
                                 if($categorie != $data['cat_id'])
                                 {
@@ -299,18 +299,18 @@ if ($_SESSION['connected'])
                 {
                     $query = 'SELECT *
                                 FROM forum';
-                    $result = mysql_query($query) or die(mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die(mysqli_error());
 
                     foreach ($_POST['nom'] as $forumId => $nom)
                     {
-                        $titre = mysql_real_escape_string($nom);
-                        $desc = mysql_real_escape_string($_POST['desc'][$forumId]);
+                        $titre = mysqli_real_escape_string($nom);
+                        $desc = mysqli_real_escape_string($_POST['desc'][$forumId]);
                         $cat = intval($_POST['cat'][$forumId]);
                         $ordre = intval($_POST['ordre'][$forumId]);
 						
 
-                        mysql_data_seek($result, 0);
-                        while ($data = mysql_fetch_assoc($result))
+                        mysqli_data_seek($result, 0);
+                        while ($data = mysqli_fetch_assoc($result))
                         {
                             if ($forumId == $data['forum_id'])
                             {
@@ -326,7 +326,7 @@ if ($_SESSION['connected'])
                                                     forum_desc = "'.$desc.'",
                                                     forum_ordre = "'.$ordre.'"
                                                 WHERE forum_id = "'.intval($forumId).'"';
-                                    mysql_query($query) or die(mysql_error());
+                                    mysqli_query($mysqli, $query) or die(mysqli_error());
                                     echo '<p>Le forum "'.$data['forum_name'].'" a été modifié !</p>';
                                 }
                             }
@@ -342,15 +342,15 @@ if ($_SESSION['connected'])
                                     forum_ordre
                                         FROM forum
                                         ORDER BY forum_cat_id, forum_ordre';
-                    $result = mysql_query($query) or die (mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                     $query2 = 'SELECT cat_id,
                                     cat_nom
                                         FROM categorie
                                         ORDER BY cat_ordre DESC';
-                    $result2 = mysql_query($query2) or die(mysql_error());
+                    $result2 = mysqli_query($mysqli, $query2) or die(mysqli_error());
 
-                    if (mysql_num_rows($result) != 0) // Existe-t-il qu moins un forum?
+                    if (mysqli_num_rows($result) != 0) // Existe-t-il qu moins un forum?
                     {
                         echo '<form method="post" action="?page=admin&cat=edit_forum">';
                         ?>
@@ -364,14 +364,14 @@ if ($_SESSION['connected'])
                     </tr>
 
                         <?php
-                        while ($data = mysql_fetch_assoc($result))
+                        while ($data = mysqli_fetch_assoc($result))
                         {
                             echo '<tr>';
                             echo '<td><input type="text" name="nom['.$data['forum_id'].']" value="'.stripslashes(htmlspecialchars($data['forum_name'])).'" /></td>';
                             echo '<td><textarea name="desc['.$data['forum_id'].']" >'.stripslashes(htmlspecialchars($data['forum_desc'])).'</textarea></td>';
                             echo '<td><select name="cat['.$data['forum_id'].']">';
-                            mysql_data_seek($result2, 0);
-                            while($data2 = mysql_fetch_assoc($result2))
+                            mysqli_data_seek($result2, 0);
+                            while($data2 = mysqli_fetch_assoc($result2))
                             {
                                 $selected = (($data2['cat_id'] == $data['forum_cat_id'])? 'selected="selected"': '');
                                 echo'<option value="'.$data2['cat_id'].'" '.$selected.' >'.stripslashes(htmlspecialchars($data2['cat_nom'])).'</option>';
@@ -400,15 +400,15 @@ if ($_SESSION['connected'])
                 {
                     $query = 'SELECT *
                                 FROM categorie';
-                    $result = mysql_query($query) or die(mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die(mysqli_error());
 
                     foreach ($_POST['nom'] as $catId => $nom)
                     {
-                        $titre = mysql_real_escape_string($nom);
+                        $titre = mysqli_real_escape_string($nom);
                         $ordre = intval($_POST['ordre'][$catId]);
 
-                        mysql_data_seek($result, 0);
-                        while ($data = mysql_fetch_assoc($result))
+                        mysqli_data_seek($result, 0);
+                        while ($data = mysqli_fetch_assoc($result))
                         {
                             if ($catId == $data['cat_id'])
                             {
@@ -420,7 +420,7 @@ if ($_SESSION['connected'])
                                                 SET cat_nom = "'.$titre.'",
                                                     cat_ordre = "'.$ordre.'"
                                                 WHERE cat_id = "'.intval($catId).'"';
-                                    mysql_query($query) or die(mysql_error());
+                                    mysqli_query($mysqli, $query) or die(mysqli_error());
                                     echo'<p>La catégorie '.$data['cat_nom'].' a été modifiée !</p>';
                                 }
                             }
@@ -434,9 +434,9 @@ if ($_SESSION['connected'])
                                     cat_ordre
                                         FROM categorie
                                         ORDER BY cat_ordre DESC';
-                    $result = mysql_query($query) or die(mysql_error());
+                    $result = mysqli_query($mysqli, $query) or die(mysqli_error());
 
-                    if (mysql_num_rows($result) != 0) // Existe-t-il qu moins une catégorie?
+                    if (mysqli_num_rows($result) != 0) // Existe-t-il qu moins une catégorie?
                     {
                         echo '<form method="post" action="?page=admin&cat=edit_categorie">';
                         ?>
@@ -448,7 +448,7 @@ if ($_SESSION['connected'])
                     </tr>
 
                     <?php
-                        while($data = mysql_fetch_assoc($result))
+                        while($data = mysqli_fetch_assoc($result))
                         {
                             echo '<tr>';
                             echo '<td><input type="text" name="nom['.$data['cat_id'].']" value="'.stripslashes(htmlspecialchars($data['cat_nom'])).'" /></td>';
@@ -477,8 +477,8 @@ if ($_SESSION['connected'])
                     {
                         $query = 'SELECT *
                                     FROM config';
-                        $result = mysql_query($query) or die(mysql_error());
-                        while ($data = mysql_fetch_assoc($result))
+                        $result = mysqli_query($mysqli, $query) or die(mysqli_error());
+                        while ($data = mysqli_fetch_assoc($result))
                         {
                             if ($data['config_nom'] == 'avatar_maxsize')
                                 $avatar_maxsize = $data['config_valeur'];
@@ -509,19 +509,19 @@ if ($_SESSION['connected'])
                         $i = 0; // compteur d'erreurs
                         $temps = time();
                         $membreId = intval($_POST['id']);
-                        $pseudo = mysql_real_escape_string($_POST['pseudo']);
-                        $signature = mysql_real_escape_string($_POST['signature']);
-                        $email = mysql_real_escape_string($_POST['email']);
-                        $msn = mysql_real_escape_string($_POST['msn']);
-                        $website = mysql_real_escape_string($_POST['website']);
-                        $occupation = mysql_real_escape_string($_POST['occupation']);
-                        $localisation = mysql_real_escape_string($_POST['localisation']);
+                        $pseudo = mysqli_real_escape_string($_POST['pseudo']);
+                        $signature = mysqli_real_escape_string($_POST['signature']);
+                        $email = mysqli_real_escape_string($_POST['email']);
+                        $msn = mysqli_real_escape_string($_POST['msn']);
+                        $website = mysqli_real_escape_string($_POST['website']);
+                        $occupation = mysqli_real_escape_string($_POST['occupation']);
+                        $localisation = mysqli_real_escape_string($_POST['localisation']);
 
                         $query = 'SELECT count(*)
                                     FROM membres
                                     WHERE membre_id = "'.$membreId.'"';
-                        $result = mysql_query($query) or die(mysql_error());
-                        $membreExiste = mysql_result($result, 0);
+                        $result = mysqli_query($mysqli, $query) or die(mysqli_error());
+                        $membreExiste = mysqli_data_seek($result, 0);
 
                         if ($membreExiste != 0)
                         {
@@ -532,8 +532,8 @@ if ($_SESSION['connected'])
                                         FROM membres
                                         WHERE membre_pseudo = "'.$pseudo.'"
                                         AND membre_id <> "'.$membreId.'"';
-                            $result = mysql_query($query) or die(mysql_error());
-                            $pseudoExiste = mysql_result($result, 0);
+                            $result = mysqli_query($mysqli, $query) or die(mysqli_error());
+                            $pseudoExiste = mysqli_data_seek($result, 0);
                             if ($membreExiste != 0)
                             {
                                 $pseudo_erreur1 = "Ce pseudo est déjà utilisé par un membre";
@@ -554,8 +554,8 @@ if ($_SESSION['connected'])
                                             FROM membres
                                             WHERE membre_email = "'.$email.'"
                                             AND membre_id <> "'.$membreId.'"';
-                                $reslut = mysql_query($query, 0) or die(mysql_error());
-                                $mailExiste = mysql_result($result, 0);
+                                $reslut = mysqli_query($mysqli, $query, 0) or die(mysqli_error());
+                                $mailExiste = mysqli_data_seek($result, 0);
                                 if ($mailExiste != 0)
                                 {
                                     $email_erreur1 = "Cette adresse email est déjà utilisée par un membre";
@@ -628,8 +628,8 @@ if ($_SESSION['connected'])
                                     $query = 'SELECT membre_avatar
                                                 FROM membres
                                                 WHERE membre_id = '.$membreId.'';
-                                    $result = mysql_query($query) or die(mysql_error());
-                                    $data = mysql_fetch_array($result);
+                                    $result = mysqli_query($mysqli, $query) or die(mysqli_error());
+                                    $data = mysqli_fetch_array($result);
 
                                     if (!empty($data['membre_avatar']))
                                         unlink("./images/avatars/".$data['membre_avatar']);
@@ -642,7 +642,7 @@ if ($_SESSION['connected'])
                                     $query = 'UPDATE membres
                                                 SET membre_avatar = "'.$nomavatar.'"
                                                 WHERE membre_id = "'.$membreId.'"';
-                                    $result = mysql_query($query) or die(mysql_error());
+                                    $result = mysqli_query($mysqli, $query) or die(mysqli_error());
                                 }
 
                                 //Une nouveauté ici : on peut choisisr de supprimer l'avatar
@@ -652,8 +652,8 @@ if ($_SESSION['connected'])
                                     $query = 'SELECT membre_avatar
                                                 FROM membres
                                                 WHERE membre_id = '.$membreId.'';
-                                    $result = mysql_query($query) or die(mysql_error());
-                                    $data = mysql_fetch_array($result);
+                                    $result = mysqli_query($mysqli, $query) or die(mysqli_error());
+                                    $data = mysqli_fetch_array($result);
 
                                     if (!empty($data['membre_avatar']))
                                         unlink("./images/avatars/".$data['membre_avatar']);
@@ -661,7 +661,7 @@ if ($_SESSION['connected'])
                                     $query = 'UPDATE membres
                                                 SET membre_avatar = ""
                                                 WHERE membre_id = '.$membreId.'';
-                                    $result = mysql_query($query);
+                                    $result = mysqli_query($mysqli, $query);
                                 }
 
                                 if (isset($_POST['email_visible']))
@@ -680,7 +680,7 @@ if ($_SESSION['connected'])
                                                 membre_localisation = "'.$localisation.'",
                                                 membre_email_visible = "'.$email_visible.'"
                                             WHERE membre_id = "'.$membreId.'"';
-                                $result = mysql_query($query) or die (mysql_error());
+                                $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
                                 echo'<h1>Modification terminée</h1>';
                                 echo'<p>Le profil a été modifié avec succès !</p>';
@@ -711,10 +711,10 @@ if ($_SESSION['connected'])
                         $query = 'SELECT *
                                     FROM membres
                                     WHERE membre_id = "'.$membre_id.'"';
-                        $result = mysql_query($query) or die(mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die(mysqli_error());
 
                         //Si la requête retourne un truc, le membre existe
-                        if ($data = mysql_fetch_assoc($result))
+                        if ($data = mysqli_fetch_assoc($result))
                         {
                             if ($data['membre_email_visible'] == 1)
                                 $checked = 'checked="checked"';
@@ -812,12 +812,12 @@ if ($_SESSION['connected'])
                                         membre_pseudo,
                                         membre_rang
                                             FROM membres';
-                        $result = mysql_query($query) or die(mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die(mysqli_error());
 
                         foreach ($_POST['rang'] as $idRang => $rang)
                         {
-                            mysql_data_seek($result, 0);
-                            while ($data = mysql_fetch_assoc($result))
+                            mysqli_data_seek($result, 0);
+                            while ($data = mysqli_fetch_assoc($result))
                             {
                                 if ($idRang == $data['membre_id'])
                                 {
@@ -826,7 +826,7 @@ if ($_SESSION['connected'])
                                         $query = 'UPDATE membres
                                                     SET membre_rang = "'.intval($rang).'"
                                                     WHERE membre_id = "'.intval($membreId).'"';
-                                        mysql_query($query) or die(mysql_error());
+                                        mysqli_query($mysqli, $query) or die(mysqli_error());
                                         if ($rang == 0)
                                             echo'<p>Le membre '.$data['membre_pseudo'].' a été banni !</p>';
                                         elseif ($data['membre_id'] == 0)
@@ -845,7 +845,7 @@ if ($_SESSION['connected'])
                                         membre_pseudo,
                                         membre_rang
                                             FROM membres';
-                        $result = mysql_query($query) or die(mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die(mysqli_error());
 
                         echo '<form method="post" action="?page=admin&cat=membres">';
                         ?>
@@ -857,7 +857,7 @@ if ($_SESSION['connected'])
                     </tr>
 
                         <?php
-                        while ($data = mysql_fetch_assoc($result))
+                        while ($data = mysqli_fetch_assoc($result))
                         {
                             echo '<tr>';
                             if (verif_auth(LEVEL_ADMIN))

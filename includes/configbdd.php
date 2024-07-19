@@ -1,6 +1,6 @@
 <?php
 $adresse = 'localhost';
-$nom = 'root';
-$motdepasse = '';
-$database = 'creafters-awuikaz';
+$nom = 'awuikaz';
+$motdepasse = 'zakiuwa';
+$database = 'awuikaz';
 ?>

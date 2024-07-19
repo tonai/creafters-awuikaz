@@ -11,14 +11,14 @@ switch($action)
                             auth_annonce
                                 FROM forum
                                 WHERE forum_id = "'.$forum.'"';
-            $result = mysql_query($query)or die(mysql_error());
-            if (mysql_num_rows($result) != 0)
+            $result = mysqli_query($mysqli, $query)or die(mysqli_error());
+            if (mysqli_num_rows($result) != 0)
             {
-                $data = mysql_fetch_array($result);
-                $message = mysql_real_escape_string($_POST['message']);
-                $mess = mysql_real_escape_string($_POST['mess']);
-                $titre = mysql_real_escape_string($_POST['titre']);
-                $description = mysql_real_escape_string($_POST['description']);
+                $data = mysqli_fetch_array($result);
+                $message = mysqli_real_escape_string($_POST['message']);
+                $mess = mysqli_real_escape_string($_POST['mess']);
+                $titre = mysqli_real_escape_string($_POST['titre']);
+                $description = mysqli_real_escape_string($_POST['description']);
                 $temps = time();
 
                 if (($mess == 'Message' && verif_auth($data['auth_topic']) && isset($_POST['submit'])) || ($mess == 'PostIt' && verif_auth($data['auth_annonce']) && isset($_POST['submit'])))
@@ -46,9 +46,9 @@ switch($action)
                                                     "'.$mess.'",
                                                     "0",
                                                     "0")';
-                        $result = mysql_query($query) or die ("Un problème est survenu lors de l'envoi du message");
+                        $result = mysqli_query($mysqli, $query) or die ("Un problème est survenu lors de l'envoi du message");
 
-                        $nouveautopic = mysql_insert_id();
+                        $nouveautopic = mysqli_insert_id();
                         //Puis on entre le message
                         $query = 'INSERT INTO post (post_id,
                                                     post_createur,
@@ -62,15 +62,15 @@ switch($action)
                                                     "'.$temps.'",
                                                     "'.$nouveautopic.'",
                                                     "'.$forum.'")';
-                        $result = mysql_query($query) or die ('Un problème est survenu lors de la création du topic');
+                        $result = mysqli_query($mysqli, $query) or die ('Un problème est survenu lors de la création du topic');
 
-                        $nouveaupost = mysql_insert_id();
+                        $nouveaupost = mysqli_insert_id();
                         //Ici on update comme prévu la valeur de topic_last_post et de topic_first_post
                         $query = 'UPDATE topic
                                     SET topic_last_post = "'.$nouveaupost.'",
                                         topic_first_post = "'.$nouveaupost.'"
                                     WHERE topic_id = "'.$nouveautopic.'"';
-                        $result = mysql_query($query) or die ('Un problème est survenu lors de la création du topic');
+                        $result = mysqli_query($mysqli, $query) or die ('Un problème est survenu lors de la création du topic');
 
                         //Enfin on met à jour les tables forum et membres
                         $query = 'UPDATE forum
@@ -78,12 +78,12 @@ switch($action)
                                         forum_topic = forum_topic + 1,
                                         forum_last_post_id = "'.$nouveaupost.'"
                                     WHERE forum_id = "'.$forum.'"';
-                        $result = mysql_query($query) or die ('Un problème est survenu lors de la création du topic');
+                        $result = mysqli_query($mysqli, $query) or die ('Un problème est survenu lors de la création du topic');
 
                         $query = 'UPDATE membres
                                     SET membre_post = membre_post + 1
                                     WHERE membre_id = "'.intval($_SESSION['id']).'"';
-                        $result = mysql_query($query) or die ("Un problème est survenu lors de l'envoi du message");
+                        $result = mysqli_query($mysqli, $query) or die ("Un problème est survenu lors de l'envoi du message");
 
                         //On ajoute une ligne dans la table forum_topic_view
                         $query = 'INSERT INTO topic_view (tv_id,
@@ -96,7 +96,7 @@ switch($action)
                                                                 "'.$forum.'",
                                                                 "'.$nouveaupost.'",
                                                                 "1")';
-                        $result = mysql_query($query);
+                        $result = mysqli_query($mysqli, $query);
 
                         //Et un petit message
                         echo '<p>Votre topic a bien été créé!<br/>';
@@ -128,11 +128,11 @@ switch($action)
                             auth_modo
                                 FROM forum
                                 WHERE forum_id ="'.$forum.'"';
-            $result = mysql_query($query) or die(mysql_error());
+            $result = mysqli_query($mysqli, $query) or die(mysqli_error());
 
-            if (mysql_num_rows($result) != 0)
+            if (mysqli_num_rows($result) != 0)
             {
-                $data = mysql_fetch_array($result);
+                $data = mysqli_fetch_array($result);
                 if (verif_auth($data['auth_topic']))
                 {
                     ?>
@@ -255,13 +255,13 @@ switch($action)
             $query = 'SELECT auth_sondage
                         FROM forum
                         WHERE forum_id = "'.$forum.'"';
-            $result = mysql_query($query)or die(mysql_error());
-            if (mysql_num_rows($result) != 0)
+            $result = mysqli_query($mysqli, $query)or die(mysqli_error());
+            if (mysqli_num_rows($result) != 0)
             {
-                $data = mysql_fetch_array($result);;
-                $titre = mysql_real_escape_string($_POST['titre']);
-                $description = mysql_real_escape_string($_POST['description']);
-                $message = mysql_real_escape_string($_POST['message']);
+                $data = mysqli_fetch_array($result);;
+                $titre = mysqli_real_escape_string($_POST['titre']);
+                $description = mysqli_real_escape_string($_POST['description']);
+                $message = mysqli_real_escape_string($_POST['message']);
                 $temps = time();
 
                 if (verif_auth($data['auth_sondage']))
@@ -295,9 +295,9 @@ switch($action)
                                                     "Sondage",
                                                     "0",
                                                     "0")';
-                        $result = mysql_query($query) or die ("Un problème est survenu lors de l'envoi du message");
+                        $result = mysqli_query($mysqli, $query) or die ("Un problème est survenu lors de l'envoi du message");
 
-                        $nouveautopic = mysql_insert_id();
+                        $nouveautopic = mysqli_insert_id();
 
                         //Puis on entre le message
                         $query = 'INSERT INTO post (post_id,
@@ -312,9 +312,9 @@ switch($action)
                                                     "'.$temps.'",
                                                     "'.$nouveautopic.'",
                                                     "'.$forum.'")';
-                        $result = mysql_query($query) or die ('Un problème est survenu lors de la création du topic');
+                        $result = mysqli_query($mysqli, $query) or die ('Un problème est survenu lors de la création du topic');
 
-                        $nouveaupost = mysql_insert_id();
+                        $nouveaupost = mysqli_insert_id();
                         
                         //On ajoute les options du sondage
                         for ($i=0; $i<$count; $i++)
@@ -324,8 +324,8 @@ switch($action)
                                                                 option_texte)
                                                             VALUES("",
                                                                 "'.$nouveaupost.'",
-                                                                "'.mysql_real_escape_string($_POST['option'][$i]).'")';
-                            $result = mysql_query($query) or die ('Un problème est survenu lors de la création du topic');
+                                                                "'.mysqli_real_escape_string($_POST['option'][$i]).'")';
+                            $result = mysqli_query($mysqli, $query) or die ('Un problème est survenu lors de la création du topic');
                         }
                         
                         //Ici on update comme prévu la valeur de topic_last_post et de topic_first_post
@@ -333,7 +333,7 @@ switch($action)
                                     SET topic_last_post = "'.$nouveaupost.'",
                                         topic_first_post = "'.$nouveaupost.'"
                                     WHERE topic_id = "'.$nouveautopic.'"';
-                        $result = mysql_query($query) or die ('Un problème est survenu lors de la création du topic');
+                        $result = mysqli_query($mysqli, $query) or die ('Un problème est survenu lors de la création du topic');
 
                         //Enfin on met à jour les tables forum et membres
                         $query = 'UPDATE forum
@@ -341,12 +341,12 @@ switch($action)
                                         forum_topic = forum_topic + 1,
                                         forum_last_post_id = "'.$nouveaupost.'"
                                     WHERE forum_id = "'.$forum.'"';
-                        $result = mysql_query($query) or die ('Un problème est survenu lors de la création du topic');
+                        $result = mysqli_query($mysqli, $query) or die ('Un problème est survenu lors de la création du topic');
 
                         $query = 'UPDATE membres
                                     SET membre_post = membre_post + 1
                                     WHERE membre_id = "'.intval($_SESSION['id']).'"';
-                        $result = mysql_query($query) or die ("Un problème est survenu lors de l'envoi du message");
+                        $result = mysqli_query($mysqli, $query) or die ("Un problème est survenu lors de l'envoi du message");
 
                         //On ajoute une ligne dans la table forum_topic_view
                         $query = 'INSERT INTO topic_view (tv_id,
@@ -359,7 +359,7 @@ switch($action)
                                                                 "'.$forum.'",
                                                                 "'.$nouveaupost.'",
                                                                 "1")';
-                        $result = mysql_query($query);
+                        $result = mysqli_query($mysqli, $query);
 
                         //Et un petit message
                         echo '<p>Votre sondage a bien été créé!<br/>';
@@ -387,11 +387,11 @@ switch($action)
                             auth_modo
                                 FROM forum
                                 WHERE forum_id = "'.$forum.'"';
-            $result = mysql_query($query) or die(mysql_error());
+            $result = mysqli_query($mysqli, $query) or die(mysqli_error());
 
-            if (mysql_num_rows($result) != 0)
+            if (mysqli_num_rows($result) != 0)
             {
-                $data = mysql_fetch_array($result);
+                $data = mysqli_fetch_array($result);
                 if (verif_auth($data['auth_sondage']))
                 {
                     ?>
@@ -517,16 +517,16 @@ switch($action)
                             topic_last_post
                                 FROM topic
                                 WHERE forum_id = "'.$forum.'"';
-            $result = mysql_query($query) or die (mysql_error());
-            while ($data = mysql_fetch_array($result))
+            $result = mysqli_query($mysqli, $query) or die (mysqli_error());
+            while ($data = mysqli_fetch_array($result))
             {
                 //Topic déjà consulté ?
                 $query = 'SELECT COUNT(*)
                             FROM topic_view
                             WHERE tv_topic_id = "'.$data['topic_id'].'"
                             AND tv_id = "'.intval($_SESSION['id']).'"';
-                $result2 = mysql_query($query) or die (mysql_error());
-                $nbr_vu = mysql_result($result2, 0);
+                $result2 = mysqli_query($mysqli, $query) or die (mysqli_error());
+                $nbr_vu = mysqli_data_seek($result2, 0);
 
                 if ($nbr_vu == 0) //Si c'est la première fois on insère une ligne entière
                 {
@@ -538,7 +538,7 @@ switch($action)
                                                     "'.$data['topic_id'].'",
                                                     "'.$forum.'",
                                                     "'.$data['topic_last_post'].'")';
-                    $result2 = mysql_query($query) or die (mysql_error());
+                    $result2 = mysqli_query($mysqli, $query) or die (mysqli_error());
                 }
                 else //Sinon, on met simplement à jour
                 {
@@ -546,7 +546,7 @@ switch($action)
                                 SET tv_post_id = "'.$data['topic_last_post'].'"
                                 WHERE tv_topic_id = "'.$data['topic_id'].'"
                                 AND tv_id = "'.intval($_SESSION['id']).'"';
-                    $result2 = mysql_query($query) or die (mysql_error());
+                    $result2 = mysqli_query($mysqli, $query) or die (mysqli_error());
                 }
             }
         }
@@ -562,17 +562,17 @@ switch($action)
                         auth_sondage
                             FROM forum
                             WHERE forum_id = "'.$forum.'"';
-        $result = mysql_query($query) or die (mysql_error());
+        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-        if (mysql_num_rows($result) != 0)
+        if (mysqli_num_rows($result) != 0)
         {
-            $data = mysql_fetch_assoc($result);
+            $data = mysqli_fetch_assoc($result);
             if (verif_auth($data['auth_view']))
             {
                 $query = 'SELECT *
                             FROM config';
-                $config = mysql_query($query) or die(mysql_error());
-                while ($dataConfig = mysql_fetch_assoc($config))
+                $config = mysqli_query($mysqli, $query) or die(mysqli_error());
+                while ($dataConfig = mysqli_fetch_assoc($config))
                 {
                     if ($dataConfig['config_nom'] == 'topic_par_page')
                         $messageParPage = $dataConfig['config_valeur'];
@@ -626,8 +626,8 @@ switch($action)
                                     ORDER BY topic_last_post DESC
                                     LIMIT '.$message.', '.$messageParPage.'';
 
-                $result = mysql_query($query) or die (mysql_error());
-                $nbPostIt = mysql_num_rows($result);
+                $result = mysqli_query($mysqli, $query) or die (mysqli_error());
+                $nbPostIt = mysqli_num_rows($result);
 
                 $nbPost = 0;
                 if ($nbPostIt < $messageParPage)
@@ -661,8 +661,8 @@ switch($action)
                                         ORDER BY topic_last_post DESC
                                         LIMIT '.$message.', '.($messageParPage-$nbPostIt).'';
 
-                    $result2 = mysql_query($query) or die (mysql_error());
-                    $nbPost = mysql_num_rows($result2);
+                    $result2 = mysqli_query($mysqli, $query) or die (mysqli_error());
+                    $nbPost = mysqli_num_rows($result2);
                 }
 
                 if (($nbPostIt+$nbPost) > 0)
@@ -679,7 +679,7 @@ switch($action)
 
                     <?php
                     // affichage des annonces
-                    while ($data = mysql_fetch_assoc($result))
+                    while ($data = mysqli_fetch_assoc($result))
                     {
                         echo '<tr>';
                         echo '<td class="forum" ><img src="./images/postit.png" alt="Post-It" class="left"/>';
@@ -702,7 +702,7 @@ switch($action)
                     // affichage des posts
                     if ($nbPost > 0)
                     {
-                        while ($data2 = mysql_fetch_assoc($result2))
+                        while ($data2 = mysqli_fetch_assoc($result2))
                         {
                             //Gestion de l'image à afficher
                             if ($_SESSION['connected']) // Si le membre est connecté

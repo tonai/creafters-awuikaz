@@ -25,10 +25,10 @@ if ($_SESSION['connected'])
                                 FROM mp
                                 LEFT JOIN membres ON membre_id = mp_expediteur
                                 WHERE mp_id = "'.$mp.'"';
-            $result = mysql_query($query) or die (mysql_error());
-            if (mysql_num_rows($result) != 0)
+            $result = mysqli_query($mysqli, $query) or die (mysqli_error());
+            if (mysqli_num_rows($result) != 0)
             {
-                $data = mysql_fetch_assoc($result);
+                $data = mysqli_fetch_assoc($result);
                 if ($_SESSION['id'] == $data['mp_receveur'])
                 {
                     ?>
@@ -75,7 +75,7 @@ if ($_SESSION['connected'])
                         $query = 'UPDATE mp
                                     SET mp_lu = "1"
                                     WHERE mp_id= "'.$mp.'"';
-                        $result = mysql_query($query) or die (mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
                     }
                 }
                 else
@@ -92,9 +92,9 @@ if ($_SESSION['connected'])
         case "nouveau": //Nouveau mp
             if (isset($_POST['submit']))
             {
-                $message = mysql_real_escape_string($_POST['message']);
-                $titre = mysql_real_escape_string($_POST['titre']);
-                $dest = mysql_real_escape_string($_POST['to']);
+                $message = mysqli_real_escape_string($_POST['message']);
+                $titre = mysqli_real_escape_string($_POST['titre']);
+                $dest = mysqli_real_escape_string($_POST['to']);
                 $temps = time();
 
                 //On récupère la valeur de l'id du destinataire
@@ -102,11 +102,11 @@ if ($_SESSION['connected'])
                 $query = 'SELECT membre_id
                             FROM membres
                             WHERE membre_pseudo = "'.$dest.'"';
-                $result = mysql_query($query) or die (mysql_error());
+                $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-                if (mysql_num_rows($result) != 0)
+                if (mysqli_num_rows($result) != 0)
                 {
-                    $data = mysql_fetch_assoc($result);
+                    $data = mysqli_fetch_assoc($result);
                     //Enfin on peut envoyer le message
                     $query = 'INSERT INTO mp (mp_id,
                                             mp_expediteur,
@@ -122,7 +122,7 @@ if ($_SESSION['connected'])
                                             "'.$message.'",
                                             "'.$temps.'",
                                             "0")';
-                    $result = mysql_query($query) or die ("Le message n'a pas pu être envoyé, veuillez réessayer");
+                    $result = mysqli_query($mysqli, $query) or die ("Le message n'a pas pu être envoyé, veuillez réessayer");
 
                     echo'<p>Votre message a bien été envoyé!<br/>';
                     echo 'Cliquez <a href="index.php">ici</a> pour revenir à l index du forum<br/>';
@@ -145,8 +145,8 @@ if ($_SESSION['connected'])
                     $query = 'SELECT membre_pseudo
                                 FROM membres
                                 WHERE membre_id = "'.$membreId.'"';
-                    $result = mysql_query($query) or die (mysql_error());
-                    if ($data = mysql_fetch_assoc($result))
+                    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
+                    if ($data = mysqli_fetch_assoc($result))
                         $to = $data['membre_pseudo'];
                 }
                 elseif (isset($_GET['mp']))
@@ -158,8 +158,8 @@ if ($_SESSION['connected'])
                                         FROM mp
                                         LEFT JOIN membres ON membre_id = mp_expediteur
                                         WHERE mp_id = "'.$mp.'"';
-                    $result = mysql_query($query)or die(mysql_error());
-                    if ($data = mysql_fetch_assoc($result))
+                    $result = mysqli_query($mysqli, $query)or die(mysqli_error());
+                    if ($data = mysqli_fetch_assoc($result))
                     {
                         $to = $data['membre_pseudo'];
                         $titre = 'RE: '.$data['mp_titre'];
@@ -267,11 +267,11 @@ if ($_SESSION['connected'])
             $query = 'SELECT mp_receveur
                         FROM mp
                         WHERE mp_id = '.$mp.'';
-            $result = mysql_query($query) or die (mysql_error());
+            $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
-            if (mysql_num_rows($result) != 0)
+            if (mysqli_num_rows($result) != 0)
             {
-                $data = mysql_fetch_assoc($result);
+                $data = mysqli_fetch_assoc($result);
                 if ($_SESSION['id'] == $data['mp_receveur'])
                 {
                     //2 cas pour cette partie : on est sûr de supprimer ou alors on ne l'est pas
@@ -287,7 +287,7 @@ if ($_SESSION['connected'])
                     {
                         $query = 'DELETE from mp
                                     WHERE mp_id = "'.$mp.'"';
-                        $result = mysql_query($query) or die (mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
                         echo'<p>Le message a bien été supprimé.<br />';
                         echo 'Cliquez <a href="?page=mp">ici</a> pour revenir à la boite de messagerie.</p>';
                     }
@@ -316,8 +316,8 @@ if ($_SESSION['connected'])
                                 LEFT JOIN membres ON mp_expediteur = membre_id
                                 WHERE mp_receveur = '.intval($_SESSION['id']).'
                                 ORDER BY mp_id DESC';
-            $result = mysql_query($query) or die(mysql_error());
-            if (mysql_num_rows($result) > 0)
+            $result = mysqli_query($mysqli, $query) or die(mysqli_error());
+            if (mysqli_num_rows($result) > 0)
             {
                 ?>
 
@@ -332,7 +332,7 @@ if ($_SESSION['connected'])
 
                 <?php
                 //On boucle et on remplit le tableau
-                while ($data = mysql_fetch_assoc($result))
+                while ($data = mysqli_fetch_assoc($result))
                 {
                     echo'<tr>';
                     //Mp jamais lu, on affiche l'icone en question

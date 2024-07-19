@@ -1,12 +1,12 @@
 <?php
 session_start();
-session_name(creaftersawuikaz4ever);
+session_name('creaftersawuikaz4ever');
 
 
 
 include("includes/configbdd.php");
-mysql_connect($adresse, $nom, $motdepasse);
-mysql_select_db($database);
+$mysqli = mysqli_connect($adresse, $nom, $motdepasse);
+mysqli_select_db($mysqli, $database);
 
 include("includes/config.php");
 include("includes/fonctions.php");
@@ -29,8 +29,8 @@ if (isset ($_COOKIE['pseudo']) && !$_SESSION['connected'])
                     membre_rang
                         FROM membres
                         WHERE membre_pseudo = "'.$_COOKIE['pseudo'].'"';
-    $result = mysql_query($query)or die (mysql_error());
-    $data = mysql_fetch_assoc($result);
+    $result = mysqli_query($mysqli, $query)or die (mysqli_error());
+    $data = mysqli_fetch_assoc($result);
     if ($data['membre_mdp'] == $_COOKIE['password']) // Acces OK !
     {
         $_SESSION['pseudo'] = $_COOKIE['pseudo'];
@@ -45,8 +45,8 @@ if (isset($_POST['connexion']) && !$_SESSION['connected'])
 {
     if (!empty($_POST['pseudo']) && !empty($_POST['password']))
     {
-        $pseudo = mysql_real_escape_string($_POST['pseudo']);
-        $password = mysql_real_escape_string($_POST['password']);
+        $pseudo = mysqli_real_escape_string($_POST['pseudo']);
+        $password = mysqli_real_escape_string($_POST['password']);
 
         $query = 'SELECT membre_mdp,
                         membre_id,
@@ -54,8 +54,8 @@ if (isset($_POST['connexion']) && !$_SESSION['connected'])
                         membre_pseudo
                             FROM membres
                             WHERE membre_pseudo = "'.$pseudo.'"';
-        $result = mysql_query($query) or die (mysql_error());
-        $data = mysql_fetch_assoc($result);
+        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
+        $data = mysqli_fetch_assoc($result);
 
         if ($data['membre_mdp'] == md5($password)) // Acces OK !
         {
@@ -101,7 +101,7 @@ if (isset($_POST['deconnexion']) && $_SESSION['connected'])
 
     $query = 'DELETE FROM whosonline
                 WHERE online_id = "'.intval($_SESSION['id']).'"';
-    $result = mysql_query($query) or die (mysql_error());
+    $result = mysqli_query($mysqli, $query) or die (mysqli_error());
 }
 
 $ip = ip2long($_SERVER['REMOTE_ADDR']);
@@ -111,13 +111,13 @@ $query = 'INSERT INTO whosonline
                     "'.$ip.'")
             ON DUPLICATE KEY
                 UPDATE online_time = "'.time().'" , online_id = "'.$_SESSION['id'].'"';
-$result = mysql_query($query) or die (mysql_error());
+$result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
 $query = 'DELETE FROM whosonline
             WHERE online_time < '.TIME_MAX.'';
-$result = mysql_query($query) or die (mysql_error());
+$result = mysqli_query($mysqli, $query) or die (mysqli_error());
 
 include("displayManager.php");
 
-mysql_close()
+mysqli_close($mysqli)
 ?>

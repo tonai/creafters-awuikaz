@@ -12,8 +12,8 @@ switch($action)
         $query = 'SELECT *
                     FROM membres
                     WHERE membre_id = "'.$membre.'"';
-        $result = mysql_query($query);
-        if ($data = mysql_fetch_assoc($result))
+        $result = mysqli_query($mysqli, $query);
+        if ($data = mysqli_fetch_assoc($result))
         {
             //On affiche les infos sur le membre
             echo '<h1>Profil de '.stripslashes(htmlspecialchars($data['membre_pseudo'])).'</h1>';
@@ -57,8 +57,8 @@ switch($action)
             {
                 $query = 'SELECT *
                             FROM config';
-                $result = mysql_query($query) or die(mysql_error());
-                while ($data = mysql_fetch_assoc($result))
+                $result = mysqli_query($mysqli, $query) or die(mysqli_error());
+                while ($data = mysqli_fetch_assoc($result))
                 {
                     if ($data['config_nom'] == 'avatar_maxsize')
                         $avatar_maxsize = $data['config_valeur'];
@@ -87,13 +87,13 @@ switch($action)
                 $i = 0; // compteur d'erreurs
                 $temps = time();
                 $membreId = intval($_POST['id']);
-                $signature = mysql_real_escape_string($_POST['signature']);
-                $email = mysql_real_escape_string($_POST['email']);
-                $msn = mysql_real_escape_string($_POST['msn']);
-                $website = mysql_real_escape_string($_POST['website']);
-                $occupation = mysql_real_escape_string($_POST['occupation']);
-                $localisation = mysql_real_escape_string($_POST['localisation']);
-                $pass = mysql_real_escape_string($_POST['password']);
+                $signature = mysqli_real_escape_string($_POST['signature']);
+                $email = mysqli_real_escape_string($_POST['email']);
+                $msn = mysqli_real_escape_string($_POST['msn']);
+                $website = mysqli_real_escape_string($_POST['website']);
+                $occupation = mysqli_real_escape_string($_POST['occupation']);
+                $localisation = mysqli_real_escape_string($_POST['localisation']);
+                $pass = mysqli_real_escape_string($_POST['password']);
 
                 if ($pass != '')
                 {
@@ -129,8 +129,8 @@ switch($action)
                                 FROM membres
                                 WHERE membre_email = "'.$email.'"
                                 AND membre_id <> '.$membreId.'';
-                    $result = mysql_query($query) or die(mysql_error());
-                    $mailExiste = mysql_result($result, 0);
+                    $result = mysqli_query($mysqli, $query) or die(mysqli_error());
+                    $mailExiste = mysqli_data_seek($result, 0);
                     if ($mailExiste != 0)
                     {
                         $email_erreur1 = "Votre adresse email est déjà utilisée par un membre";
@@ -204,8 +204,8 @@ switch($action)
                         $query = 'SELECT membre_avatar
                                     FROM membres
                                     WHERE membre_id = '.$membreId.'';
-                        $result = mysql_query($query) or die(mysql_error());
-                        $data = mysql_fetch_array($result);
+                        $result = mysqli_query($mysqli, $query) or die(mysqli_error());
+                        $data = mysqli_fetch_array($result);
 
                         if (!empty($data['membre_avatar']))
                             unlink("./images/avatars/".$data['membre_avatar']);
@@ -218,7 +218,7 @@ switch($action)
                         $query = 'UPDATE membres
                                     SET membre_avatar = "'.$nomavatar.'"
                                     WHERE membre_id = "'.$membreId.'"';
-                        $result = mysql_query($query) or die(mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die(mysqli_error());
                     }
 
                     //Une nouveauté ici : on peut choisisr de supprimer l'avatar
@@ -228,8 +228,8 @@ switch($action)
                         $query = 'SELECT membre_avatar
                                     FROM membres
                                     WHERE membre_id = '.$membreId.'';
-                        $result = mysql_query($query) or die(mysql_error());
-                        $data = mysql_fetch_array($result);
+                        $result = mysqli_query($mysqli, $query) or die(mysqli_error());
+                        $data = mysqli_fetch_array($result);
 
                         if (!empty($data['membre_avatar']))
                             unlink("./images/avatars/".$data['membre_avatar']);
@@ -237,7 +237,7 @@ switch($action)
                         $query = 'UPDATE membres
                                     SET membre_avatar = ""
                                     WHERE membre_id = '.$membreId.'';
-                        $result = mysql_query($query);
+                        $result = mysqli_query($mysqli, $query);
                     }
                     echo'<h1>Modification terminée</h1>';
                     echo'<p>Votre profil a été modifié avec succès !</p>';
@@ -261,7 +261,7 @@ switch($action)
                                         membre_localisation = "'.$localisation.'",
                                         membre_email_visible = "'.$email_visible.'"
                                     WHERE membre_id = "'.$membreId.'"';
-                        $result = mysql_query($query) or die (mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
                     }
                     else
                     {
@@ -274,7 +274,7 @@ switch($action)
                                         membre_localisation = "'.$localisation.'",
                                         membre_email_visible = "'.$email_visible.'"
                                     WHERE membre_id = "'.$membreId.'"';
-                        $result = mysql_query($query) or die (mysql_error());
+                        $result = mysqli_query($mysqli, $query) or die (mysqli_error());
                     }
                 }
                 else
@@ -302,8 +302,8 @@ switch($action)
                 $query = 'SELECT *
                             FROM membres
                             WHERE membre_id = "'.intval($_SESSION['id']).'"';
-                $result = mysql_query($query);
-                if ($data = mysql_fetch_assoc($result))
+                $result = mysqli_query($mysqli, $query);
+                if ($data = mysqli_fetch_assoc($result))
                 {
                     if ($data['membre_email_visible'] == 1)
                         $checked = 'checked="checked"';

@@ -23,6 +23,7 @@ function fix_magic_quotes ($var = NULL, $sybase = NULL)
 	// si $var n'est pas spécifié, on corrige toutes les variables superglobales
 	if (!isset($var))
 	{
+    /*
 		// si les magic_quotes sont activées
 		if (get_magic_quotes_gpc())
 		{
@@ -47,6 +48,7 @@ function fix_magic_quotes ($var = NULL, $sybase = NULL)
 			// scripts qui y sont sensibles fonctionnent
 			ini_set('magic_quotes_gpc', 0);
 		}
+    */
 
 		// idem, pour magic_quotes_sybase
 		if ($sybase)
@@ -55,7 +57,7 @@ function fix_magic_quotes ($var = NULL, $sybase = NULL)
 		}
 
 		// désactive magic_quotes_runtime
-		set_magic_quotes_runtime(0);
+		// set_magic_quotes_runtime(0);
 		return TRUE;
 	}
 
